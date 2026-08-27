@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Courtroom Simulator</title>
+<title>Courtroom Simulator - Career Edition</title>
 <style>
   * { box-sizing: border-box; }
   body {
@@ -14,7 +14,7 @@
     color: #2c1810;
   }
   .game-wrap {
-    max-width: 900px;
+    max-width: 960px;
     margin: 0 auto;
     background: #faf3e0;
     border-radius: 12px;
@@ -25,32 +25,45 @@
   .header {
     background: #3e2723;
     color: #ffd700;
-    padding: 18px 24px;
+    padding: 14px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 3px solid #b8860b;
+    flex-wrap: wrap;
+    gap: 8px;
   }
-  .header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; }
+  .header h1 { margin: 0; font-size: 1.3rem; letter-spacing: 1px; }
+  .header .rank-badge {
+    background: #b8860b;
+    color: #3e2723;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
   .stats {
     display: flex;
-    gap: 20px;
-    font-size: 0.9rem;
+    gap: 16px;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
   }
   .stats span { font-weight: bold; color: #ffd700; }
   .main {
     display: grid;
-    grid-template-columns: 220px 1fr;
-    min-height: 520px;
+    grid-template-columns: 240px 1fr;
+    min-height: 560px;
   }
   .sidebar {
     background: #f5e6c8;
-    padding: 16px;
+    padding: 14px;
     border-right: 2px solid #8d6e63;
+    overflow-y: auto;
+    max-height: 600px;
   }
   .sidebar h3 {
-    margin: 0 0 10px 0;
-    font-size: 0.9rem;
+    margin: 0 0 8px 0;
+    font-size: 0.85rem;
     color: #3e2723;
     border-bottom: 1px solid #8d6e63;
     padding-bottom: 4px;
@@ -59,9 +72,9 @@
     background: #fff;
     border: 1px solid #8d6e63;
     border-radius: 6px;
-    padding: 8px;
-    margin-bottom: 8px;
-    font-size: 0.8rem;
+    padding: 6px;
+    margin-bottom: 6px;
+    font-size: 0.75rem;
   }
   .cal-day.active {
     border-color: #b8860b;
@@ -69,32 +82,34 @@
     box-shadow: 0 0 0 2px #b8860b;
   }
   .cal-title { font-weight: bold; color: #1a237e; }
-  .cal-type { font-size: 0.75rem; color: #424242; }
+  .cal-type { font-size: 0.7rem; color: #424242; }
   .badge {
     display: inline-block;
-    padding: 1px 6px;
+    padding: 1px 5px;
     border-radius: 4px;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: bold;
-    margin-left: 4px;
+    margin-left: 3px;
   }
   .badge-j { background: #e3f2fd; color: #1a237e; }
   .badge-b { background: #f3e5f5; color: #4a148c; }
-  .content { padding: 20px; background: #faf3e0; }
+  .badge-c { background: #ffebee; color: #b71c1c; }
+  .badge-r { background: #e8f5e9; color: #1b5e20; }
+  .content { padding: 16px; background: #faf3e0; overflow-y: auto; max-height: 600px; }
   .card {
     background: #fff;
     border: 2px solid #8d6e63;
     border-radius: 8px;
-    padding: 18px;
-    margin-bottom: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
   }
-  .card h3 { margin: 0 0 10px 0; color: #3e2723; font-size: 1.05rem; }
+  .card h3 { margin: 0 0 8px 0; color: #3e2723; font-size: 1rem; }
   .meta {
     background: #f5f5f5;
     border-radius: 6px;
-    padding: 12px;
-    font-size: 0.9rem;
-    line-height: 1.6;
+    padding: 10px;
+    font-size: 0.85rem;
+    line-height: 1.5;
   }
   .meta strong { color: #3e2723; }
   .evidence-item {
@@ -102,9 +117,9 @@
     background: #f5e6c8;
     border: 1px solid #8d6e63;
     border-radius: 4px;
-    padding: 5px 12px;
-    margin: 4px 4px 0 0;
-    font-size: 0.85rem;
+    padding: 4px 10px;
+    margin: 3px 3px 0 0;
+    font-size: 0.8rem;
     cursor: pointer;
     user-select: none;
     transition: all 0.15s;
@@ -119,46 +134,41 @@
     display: none;
     background: #f5f5f5;
     border-left: 3px solid #1a237e;
-    padding: 10px;
-    margin: 8px 0;
+    padding: 8px;
+    margin: 6px 0;
     border-radius: 0 6px 6px 0;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: #333;
-    animation: slideDown 0.2s ease;
   }
   .evidence-desc.open { display: block; }
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-4px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
   .witness {
     background: #f5e6c8;
     border-left: 4px solid #5d4037;
     border-radius: 6px;
-    padding: 12px;
-    margin-bottom: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
   }
-  .witness-name { font-weight: bold; color: #3e2723; }
-  .witness-role { font-size: 0.8rem; color: #555; }
-  .witness-text { font-style: italic; font-size: 0.9rem; color: #444; margin-top: 6px; }
+  .witness-name { font-weight: bold; color: #3e2723; font-size: 0.9rem; }
+  .witness-role { font-size: 0.75rem; color: #555; }
+  .witness-text { font-style: italic; font-size: 0.85rem; color: #444; margin-top: 4px; }
   .jury-box {
     background: #3e2723;
     color: #faf3e0;
     border-radius: 8px;
-    padding: 12px;
-    margin-top: 12px;
+    padding: 10px;
+    margin-top: 10px;
   }
-  .jury-box h4 { margin: 0 0 8px 0; color: #ffd700; font-size: 0.9rem; }
-  .jury-row { display: flex; justify-content: space-between; font-size: 0.85rem; }
+  .jury-box h4 { margin: 0 0 6px 0; color: #ffd700; font-size: 0.85rem; }
+  .jury-row { display: flex; justify-content: space-between; font-size: 0.8rem; }
   .btn {
-    padding: 10px 20px;
+    padding: 8px 16px;
     border: none;
     border-radius: 6px;
     font-family: Georgia, serif;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
     font-weight: bold;
-    margin: 4px;
+    margin: 3px;
     transition: all 0.2s;
   }
   .btn:hover { transform: translateY(-1px); opacity: 0.92; }
@@ -166,16 +176,18 @@
   .btn-green { background: #1b5e20; color: #fff; }
   .btn-red { background: #b71c1c; color: #fff; }
   .btn-wood { background: #5d4037; color: #fff; }
+  .btn-gold { background: #b8860b; color: #fff; }
+  .btn-gray { background: #757575; color: #fff; }
   .sentence-btn {
     display: inline-block;
-    padding: 10px 16px;
+    padding: 8px 14px;
     border: 2px solid #8d6e63;
     background: #fff;
     border-radius: 6px;
     cursor: pointer;
     font-family: Georgia, serif;
-    margin: 4px;
-    font-size: 0.9rem;
+    margin: 3px;
+    font-size: 0.85rem;
     transition: all 0.15s;
   }
   .sentence-btn:hover { border-color: #b8860b; background: #fff8e1; }
@@ -184,76 +196,203 @@
     background: #e8f5e9;
     border: 2px solid #1b5e20;
     color: #1b5e20;
-    padding: 14px;
+    padding: 12px;
     border-radius: 8px;
     text-align: center;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
   .result-unjust {
     background: #ffebee;
     border: 2px solid #b71c1c;
     color: #b71c1c;
-    padding: 14px;
+    padding: 12px;
     border-radius: 8px;
     text-align: center;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
-  .start-screen { text-align: center; padding: 50px 20px; }
-  .start-screen h2 { color: #3e2723; font-size: 1.6rem; margin-bottom: 12px; }
-  .start-screen p { color: #444; max-width: 500px; margin: 0 auto 24px auto; line-height: 1.6; }
+  .start-screen { text-align: center; padding: 40px 16px; }
+  .start-screen h2 { color: #3e2723; font-size: 1.5rem; margin-bottom: 10px; }
+  .start-screen p { color: #444; max-width: 480px; margin: 0 auto 20px auto; line-height: 1.5; font-size: 0.9rem; }
   .progress-bar {
     width: 100%;
-    height: 8px;
+    height: 6px;
     background: #e0e0e0;
-    border-radius: 4px;
-    margin-top: 4px;
+    border-radius: 3px;
+    margin-top: 3px;
     overflow: hidden;
   }
   .progress-fill {
     height: 100%;
     background: #ffd700;
-    border-radius: 4px;
+    border-radius: 3px;
     transition: width 0.4s ease;
   }
   .stat-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 12px;
+    gap: 8px;
+    margin-top: 10px;
   }
   .stat-box {
     background: #f5f5f5;
-    padding: 10px;
+    padding: 8px;
     border-radius: 6px;
     text-align: center;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
-  .stat-box .num { font-size: 1.2rem; font-weight: bold; }
+  .stat-box .num { font-size: 1.1rem; font-weight: bold; }
   .end-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin: 16px 0;
+    gap: 8px;
+    margin: 14px 0;
   }
   .end-box {
     background: #f5e6c8;
-    padding: 12px;
+    padding: 10px;
     border-radius: 8px;
     text-align: center;
   }
-  .end-box .num { font-size: 1.3rem; font-weight: bold; color: #3e2723; }
+  .end-box .num { font-size: 1.2rem; font-weight: bold; color: #3e2723; }
+  .media-box {
+    background: #fff3e0;
+    border: 2px solid #ef6c00;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+  }
+  .media-box h4 { margin: 0 0 6px 0; color: #e65100; font-size: 0.9rem; }
+  .media-headline {
+    font-style: italic;
+    color: #bf360c;
+    margin: 4px 0;
+    padding: 4px 0;
+    border-bottom: 1px dashed #ffcc80;
+  }
+  .pressure-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 0.75rem;
+  }
+  .pressure-track {
+    flex: 1;
+    height: 10px;
+    background: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .pressure-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.4s ease;
+  }
+  .pressure-low { background: #66bb6a; }
+  .pressure-med { background: #ffa726; }
+  .pressure-high { background: #ef5350; }
+  .hub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .hub-card {
+    background: #fff;
+    border: 2px solid #8d6e63;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .hub-card:hover {
+    border-color: #b8860b;
+    background: #fff8e1;
+    transform: translateY(-2px);
+  }
+  .hub-card h4 { margin: 0 0 6px 0; color: #3e2723; }
+  .hub-card p { margin: 0; font-size: 0.8rem; color: #555; }
+  .hub-icon { font-size: 1.6rem; margin-bottom: 6px; }
+  .roster-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+  .roster-table th, .roster-table td {
+    border: 1px solid #8d6e63;
+    padding: 6px;
+    text-align: left;
+  }
+  .roster-table th {
+    background: #3e2723;
+    color: #ffd700;
+  }
+  .roster-table tr:nth-child(even) { background: #f5e6c8; }
+  .parole-card {
+    background: #e8f5e9;
+    border: 2px solid #1b5e20;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .parole-stat {
+    display: flex;
+    justify-content: space-between;
+    margin: 6px 0;
+    font-size: 0.85rem;
+  }
+  .dp-phase {
+    background: #ffebee;
+    border: 2px solid #b71c1c;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .factor-box {
+    background: #fff;
+    border: 1px solid #8d6e63;
+    border-radius: 6px;
+    padding: 8px;
+    margin: 6px 0;
+    font-size: 0.85rem;
+  }
+  .factor-ag { border-left: 4px solid #b71c1c; }
+  .factor-mi { border-left: 4px solid #1b5e20; }
+  .defendant-row {
+    background: #f5f5f5;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-left: 4px solid #1a237e;
+  }
+  .defendant-row h4 { margin: 0 0 4px 0; color: #3e2723; }
+  .defendant-row .verdict-btns { margin-top: 6px; }
+  .xp-bar-wrap { margin-top: 8px; }
+  .xp-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #444;
+  }
 </style>
+<base target="_blank">
 </head>
 <body>
 
 <div class="game-wrap">
   <div class="header">
-    <h1>⚖️ Courtroom Simulator</h1>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <h1>⚖️ Courtroom Simulator</h1>
+      <span class="rank-badge" id="rank-display">Magistrate Judge</span>
+    </div>
     <div class="stats">
       <div>💰 <span id="st-sal">$85,000</span></div>
       <div>⭐ <span id="st-rep">★★★☆☆</span></div>
       <div>📅 <span id="st-day">1</span></div>
       <div>⚖️ <span id="st-cas">0</span></div>
+      <div>📰 <span id="st-med">0</span></div>
     </div>
   </div>
 
@@ -261,275 +400,591 @@
     <div class="sidebar">
       <h3>📋 Court Calendar</h3>
       <div id="cal-list"></div>
-      <h3 style="margin-top:16px;">📊 Career</h3>
-      <div style="font-size:0.8rem;color:#444;margin-top:6px;">
+      <h3 style="margin-top:14px;">📊 Career</h3>
+      <div style="font-size:0.75rem;color:#444;margin-top:4px;">
         <div>Justice: <span id="st-jus">50</span>/100</div>
         <div class="progress-bar"><div class="progress-fill" id="bar-jus" style="width:50%"></div></div>
-        <div style="margin-top:8px;">Public Trust: <span id="st-tru">50</span>/100</div>
+        <div style="margin-top:6px;">Public Trust: <span id="st-tru">50</span>/100</div>
         <div class="progress-bar"><div class="progress-fill" id="bar-tru" style="width:50%"></div></div>
+        <div style="margin-top:6px;">Media Pressure: <span id="st-pre">0</span>/100</div>
+        <div class="progress-bar"><div class="progress-fill" id="bar-pre" style="width:0%;background:#ef5350;"></div></div>
+        <div class="xp-bar-wrap">
+          <div class="xp-label"><span>XP</span><span id="st-xp">0</span></div>
+          <div class="progress-bar"><div class="progress-fill" id="bar-xp" style="width:0%"></div></div>
+        </div>
       </div>
+      <h3 style="margin-top:14px;">📰 Media</h3>
+      <div id="media-box" style="font-size:0.75rem;color:#555;">
+        <em>No active stories.</em>
+      </div>
+      <h3 style="margin-top:14px;">🚔 Inmates</h3>
+      <div id="inmate-count" style="font-size:0.8rem;color:#3e2723;font-weight:bold;">0 incarcerated</div>
+      <button class="btn btn-wood" style="width:100%;margin-top:6px;font-size:0.75rem;padding:6px;" onclick="showRoster()">View Roster</button>
     </div>
-    <div class="content" id="main-content">
-      <!-- Content rendered by JS -->
-    </div>
+    <div class="content" id="main-content"></div>
   </div>
 </div>
 
 <script>
-const CASES = [
-  {
-    id: "2026-001", charge: "First-Degree Burglary", defendant: "Marcus Webb", pros: "State", def: "Public Defender", type: "jury", guilty: true,
+
+// ==================== DATA POOLS ====================
+const FIRST_NAMES = ["James","Maria","Robert","Jennifer","Michael","Linda","William","Patricia","David","Elizabeth","Richard","Susan","Joseph","Jessica","Thomas","Sarah","Charles","Karen","Daniel","Nancy","Matthew","Lisa","Anthony","Betty","Mark","Helen","Donald","Sandra","Steven","Donna","Kenneth","Carol","Paul","Ruth","Andrew","Sharon","Joshua","Michelle","Kevin","Emily","Brian","Amanda","George","Melissa","Edward","Deborah","Ronald","Stephanie","Timothy","Rebecca","Jason","Laura","Jeffrey","Shirley","Ryan","Cynthia","Jacob","Kathleen","Gary","Amy","Nicholas","Angela","Eric","Anna","Jonathan","Brenda","Stephen","Pamela","Larry","Nicole","Justin","Samantha","Scott","Katherine","Brandon","Emma","Benjamin","Rachel","Samuel","Christine","Gregory","Catherine","Frank","Debra","Alexander","Carolyn","Raymond","Janet","Patrick","Virginia","Jack","Dennis","Heather","Jerry","Diane","Tyler","Julie","Aaron","Joyce","Jose","Victoria","Adam","Olivia","Nathan","Kelly","Henry","Christina","Douglas","Lauren","Zachary","Martha","Peter","Joan","Kyle","Evelyn","Ethan","Megan","Walter","Cheryl","Noah","Andrea","Jeremy","Hannah","Christian","Frances","Keith","Jacqueline","Roger","Alice","Terry","Teresa","Gerald","Gloria","Harold","Doris","Sean","Sara","Austin","Janice","Carl","Jean","Arthur","Madison","Lawrence","Marilyn","Dylan","Abigail","Jesse","Julia","Jordan","Grace","Bryan","Judy","Billy","Theresa","Joe","Beverly","Bruce","Denise","Gabriel","Logan","Albert","Willie","Alan","Juan","Wayne","Elijah","Randy","Roy","Vincent","Ralph","Eugene","Russell","Bobby","Mason","Philip","Louis","Steve","Johnny","Craig"];
+const LAST_NAMES = ["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez","Hernandez","Lopez","Gonzalez","Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin","Lee","Perez","Thompson","White","Harris","Sanchez","Clark","Ramirez","Lewis","Robinson","Walker","Young","Allen","King","Wright","Scott","Torres","Nguyen","Hill","Flores","Green","Adams","Nelson","Baker","Hall","Rivera","Campbell","Mitchell","Carter","Roberts","Gomez","Phillips","Evans","Turner","Diaz","Parker","Cruz","Edwards","Collins","Reyes","Stewart","Morris","Morales","Murphy","Cook","Rogers","Gutierrez","Ortiz","Morgan","Cooper","Peterson","Bailey","Reed","Kelly","Howard","Ramos","Kim","Cox","Ward","Richardson","Watson","Brooks","Chavez","Wood","James","Bennett","Gray","Mendoza","Ruiz","Hughes","Price","Alvarez","Castillo","Sanders","Patel","Myers","Long","Ross","Foster","Jimenez","Powell","Jenkins","Perry","Russell","Sullivan","Bell","Coleman","Butler","Henderson","Barnes","Gonzales","Fisher","Vasquez","Simmons","Romero","Jordan","Patterson","Alexander","Hamilton","Graham","Reynolds","Griffin","Wallace","Moreno","West","Cole","Hayes","Bryant","Herrera","Gibson","Ellis","Tran","Medina","Aguilar","Stevens","Murray","Ford","Castro","Marshall","Owens","Harrison","Fernandez","Woods","Washington","Kennedy","Wells","Vargas","Henry","Chen","Freeman","Webb","Tucker","Guzman","Burns","Crawford","Olson","Simpson","Porter","Hunter","Gordon","Mendez","Silva","Shaw","Snyder","Mason","Dixon","Munoz","Hunt","Hicks","Holmes","Palmer","Wagner","Black","Robertson","Boyd","Rose","Stone","Salazar","Fox","Warren","Mills","Meyer","Rice","Schmidt","Garza","Daniels","Ferguson","Nichols","Stephens","Soto","Weaver","Ryan","Gardner","Payne","Grant","Dunn","Kelley","Spencer","Hawkins","Arnold","Pierce","Vazquez","Hansen","Peters","Santos","Hart","Bradley","Knight","Elliott","Cunningham","Duncan"];
+
+const CHARGE_TEMPLATES = {
+  theft: {
+    labels: ["Petty Theft","Grand Theft","Burglary","Robbery"],
+    type: "jury", severity: 4, guiltyBias: 0.6,
     evidence: [
-      { id: "e1", name: "Security Footage", desc: "Grainy night-vision video shows a figure matching defendant's build entering through back door. Face partially obscured by hood.", weight: 0.7 },
-      { id: "e2", name: "Fingerprint on Windowsill", desc: "Defendant's partial print found on exterior windowsill. Defense argues he was there two weeks prior for a plumbing estimate.", weight: 0.4 },
-      { id: "e3", name: "Stolen Items Found", desc: "Electronics recovered from defendant's cousin's garage. Defendant claims he bought them at a flea market.", weight: 0.6 },
-      { id: "e4", name: "Alibi - Girlfriend", desc: "Girlfriend testifies he was with her all night, but their relationship is new and she seemed nervous.", weight: -0.3 },
-      { id: "e5", name: "Phone Location Data", desc: "Cell tower data places defendant within 2 blocks of the residence at 1:58 AM.", weight: 0.5 }
+      {name:"Security Footage",desc:"Video shows suspect near scene around time of incident.",weightRange:[0.4,0.8]},
+      {name:"Fingerprint",desc:"Prints found on stolen item or entry point.",weightRange:[0.3,0.7]},
+      {name:"Stolen Property",desc:"Items recovered from suspect's residence or vehicle.",weightRange:[0.5,0.9]},
+      {name:"Alibi Witness",desc:"Friend claims suspect was elsewhere during crime.",weightRange:[-0.6,-0.2]},
+      {name:"Purchase Receipt",desc:"Receipt shows suspect bought item legally prior.",weightRange:[-0.8,-0.4]},
     ],
     witnesses: [
-      { name: "Officer Dana Reyes", role: "Arresting Officer", text: "We found the stolen TV in the cousin's garage. The defendant was cooperative during arrest and waived his rights voluntarily." },
-      { name: "Dr. Alan Voss", role: "Forensic Analyst", text: "The fingerprint is a partial match — 8 points of similarity. Not conclusive on its own, but consistent with the defendant." },
-      { name: "Tanya Webb", role: "Defendant's Girlfriend", text: "Marcus was with me from 10 PM to 6 AM. We were watching movies. I... I just know he didn't do this." },
-      { name: "Marcus Webb", role: "Defendant", text: "I bought that TV fair and square at the Westside Flea Market. I gave the guy $200 cash. No receipt. I know how it looks." }
+      {role:"Arresting Officer",text:"We found the stolen goods in plain sight during a lawful search."},
+      {role:"Store Manager",text:"I reviewed the footage. That is the person who took the merchandise."},
+      {role:"Forensic Analyst",text:"The evidence is consistent with the defendant but not absolutely definitive."},
+      {role:"Defendant",text:"I would never steal. This is a terrible mistake and I want to clear my name."},
     ],
     sentences: [
-      { label: "5 Years Prison", pub: -5, jus: 5 },
-      { label: "3 Years + Restitution", pub: 0, jus: 3 },
-      { label: "Probation + Community Service", pub: 5, jus: -2 },
-      { label: "Time Served", pub: 10, jus: -5 }
+      {label:"3 Years Prison",pub:0,jus:3,years:3},
+      {label:"1 Year + Restitution",pub:2,jus:5,years:1},
+      {label:"Probation",pub:5,jus:-2,years:0},
+      {label:"Time Served",pub:8,jus:-5,years:0},
     ]
   },
-  {
-    id: "2026-002", charge: "Aggravated Assault", defendant: "Elena Vasquez", pros: "State", def: "Private Attorney", type: "bench", guilty: false,
+  assault: {
+    labels: ["Simple Assault","Aggravated Assault","Domestic Violence"],
+    type: "bench", severity: 5, guiltyBias: 0.5,
     evidence: [
-      { id: "e1", name: "911 Call Recording", desc: "Defendant is heard screaming 'He's going to kill me!' and 'Get away from me!' before the stabbing.", weight: -0.8 },
-      { id: "e2", name: "Victim's Prior Arrests", desc: "Ex-boyfriend has two prior DV arrests, neither resulting in conviction. Pattern of intimidation.", weight: -0.5 },
-      { id: "e3", name: "Crime Scene Photos", desc: "Knife was in defendant's kitchen. Blood spatter suggests close-quarters struggle, not premeditated attack.", weight: -0.3 },
-      { id: "e4", name: "Defendant's Injuries", desc: "Medical report shows bruising on arms and a split lip consistent with being grabbed and struck.", weight: -0.7 },
-      { id: "e5", name: "Neighbor's Statement", desc: "Neighbor heard shouting and 'thumping against the wall' for 10 minutes before the 911 call.", weight: -0.4 }
+      {name:"Medical Report",desc:"Victim injuries documented by emergency physician.",weightRange:[0.3,0.7]},
+      {name:"911 Recording",desc:"Call captures sounds of altercation and distress.",weightRange:[0.2,0.6]},
+      {name:"Witness Photo",desc:"Photos of injuries taken shortly after incident.",weightRange:[0.4,0.8]},
+      {name:"Self-Defense Claim",desc:"Evidence supports defendant was attacked first.",weightRange:[-0.8,-0.3]},
+      {name:"Victim Recants",desc:"Victim refuses to cooperate or changes statement.",weightRange:[-0.5,-0.1]},
     ],
     witnesses: [
-      { name: "Sgt. Mike Torres", role: "First Responder", text: "When we arrived, Ms. Vasquez was hysterical but cooperative. The victim was on the floor, conscious, bleeding from the shoulder." },
-      { name: "Dr. Priya Sharma", role: "ER Physician", text: "The wound was superficial — 2 inches deep, missed major vessels. Ms. Vasquez had defensive bruising and a contused lip." },
-      { name: "Carlos Mendez", role: "Victim", text: "She just snapped. I was trying to talk to her and she grabbed a knife. I never touched her." },
-      { name: "Elena Vasquez", role: "Defendant", text: "He broke in. He was drunk. He hit me and pinned me against the counter. I grabbed the knife because I was terrified." }
+      {role:"First Responder",text:"The scene was chaotic. Both parties had injuries when we arrived."},
+      {role:"ER Physician",text:"Injuries are consistent with the alleged attack method."},
+      {role:"Neighbor",text:"I heard shouting but I did not see who threw the first punch."},
+      {role:"Defendant",text:"They came at me first. I had no choice but to defend myself."},
     ],
     sentences: [
-      { label: "Acquitted - Self-Defense", pub: -5, jus: 10 },
-      { label: "6 Months + Anger Management", pub: 0, jus: -3 },
-      { label: "2 Years Prison", pub: 5, jus: -8 }
+      {label:"5 Years Prison",pub:3,jus:4,years:5},
+      {label:"2 Years + Counseling",pub:1,jus:3,years:2},
+      {label:"Anger Management",pub:-2,jus:0,years:0},
+      {label:"Acquitted",pub:-5,jus:8,years:0},
     ]
   },
-  {
-    id: "2026-003", charge: "Embezzlement ($180,000)", defendant: "Robert Chen", pros: "Federal", def: "White-Collar Defense Firm", type: "jury", guilty: true,
+  fraud: {
+    labels: ["Wire Fraud","Embezzlement","Insurance Fraud","Tax Evasion"],
+    type: "jury", severity: 6, guiltyBias: 0.7,
     evidence: [
-      { id: "e1", name: "Bank Transfer Records", desc: "18 wire transfers totaling $180,000 from company account to 'Apex Consulting LLC' — a shell company registered in Chen's sister's name.", weight: 0.9 },
-      { id: "e2", name: "Email Correspondence", desc: "Chen emailed the bank authorizing each transfer, citing 'consulting fees.' No contract for services exists.", weight: 0.8 },
-      { id: "e3", name: "Sister's Testimony", desc: "Sister claims she knew nothing about Apex Consulting and never received any money. Her signature on documents appears forged.", weight: 0.6 },
-      { id: "e4", name: "Defendant's Financial Records", desc: "Chen's personal accounts show deposits matching the transfer amounts within 48 hours of each wire.", weight: 0.9 },
-      { id: "e5", name: "Character Witnesses", desc: "Three colleagues describe Chen as 'trustworthy' and 'the last person they'd suspect.'", weight: -0.2 }
+      {name:"Bank Records",desc:"Suspicious transfers documented over several months.",weightRange:[0.5,0.9]},
+      {name:"Email Trail",desc:"Emails appear to authorize fraudulent transactions.",weightRange:[0.4,0.8]},
+      {name:"Audit Report",desc:"Independent audit found significant discrepancies.",weightRange:[0.6,0.9]},
+      {name:"Character Witness",desc:"Colleagues vouch for defendant's integrity and honesty.",weightRange:[-0.4,-0.1]},
+      {name:"Accounting Error",desc:"Defense claims clerical mistake, not criminal intent.",weightRange:[-0.6,-0.2]},
     ],
     witnesses: [
-      { name: "Agent Sarah Kowalski", role: "FBI Financial Crimes", text: "The pattern is textbook. Small, regular transfers just below the reporting threshold. He knew exactly what he was doing." },
-      { name: "Linda Chen", role: "Defendant's Sister", text: "I never signed anything for Apex. I didn't even know that company existed until the FBI showed up at my door." },
-      { name: "James Holt", role: "Company CEO", text: "Robert was like family. I gave him full access because I trusted him. This betrayal... it destroyed our company." },
-      { name: "Robert Chen", role: "Defendant", text: "Apex was a legitimate vendor. The paperwork got lost during our office move. This is a misunderstanding blown out of proportion." }
+      {role:"FBI Agent",text:"The pattern is clear and intentional. This was not a mistake."},
+      {role:"Forensic Accountant",text:"The numbers do not lie. A significant amount of money is missing."},
+      {role:"Coworker",text:"I never suspected them. They always seemed honest and hardworking."},
+      {role:"Defendant",text:"It was a bookkeeping error. I was going to fix it as soon as I noticed."},
     ],
     sentences: [
-      { label: "10 Years Federal Prison", pub: 5, jus: 8 },
-      { label: "7 Years + Full Restitution", pub: 8, jus: 6 },
-      { label: "5 Years + Asset Forfeiture", pub: 3, jus: 4 },
-      { label: "House Arrest + Fine", pub: -5, jus: -5 }
+      {label:"10 Years + Restitution",pub:5,jus:7,years:10},
+      {label:"5 Years + Fine",pub:3,jus:5,years:5},
+      {label:"House Arrest",pub:-3,jus:-2,years:0},
+      {label:"Probation",pub:-5,jus:-5,years:0},
     ]
   },
-  {
-    id: "2026-004", charge: "Drug Possession with Intent to Distribute", defendant: "Darnell Jackson", pros: "State", def: "Public Defender", type: "bench", guilty: false,
+  drugs: {
+    labels: ["Possession","Distribution","Trafficking"],
+    type: "bench", severity: 4, guiltyBias: 0.4,
     evidence: [
-      { id: "e1", name: "Marijuana (2 oz)", desc: "Lab-confirmed cannabis. In many states this amount is legal for personal use.", weight: -0.2 },
-      { id: "e2", name: "Baggies in Glove Box", desc: "15 small plastic bags. Defendant claims he uses them for meal prepping and storing snacks.", weight: 0.3 },
-      { id: "e3", name: "$1,200 Cash", desc: "Defendant is a restaurant server. Bank records show regular cash deposits. No drug ledger found.", weight: -0.3 },
-      { id: "e4", name: "Traffic Stop Video", desc: "Officer pulled defendant over for 'failure to signal.' Bodycam shows clean signal. No probable cause evident.", weight: -0.7 },
-      { id: "e5", name: "Employment Records", desc: "Works 50 hours/week at a diner. Coworkers confirm he always carries cash tips.", weight: -0.4 }
+      {name:"Drug Evidence",desc:"Substances found in vehicle during search.",weightRange:[0.3,0.7]},
+      {name:"Scale & Baggies",desc:"Distribution paraphernalia found in residence.",weightRange:[0.2,0.6]},
+      {name:"Cash Seized",desc:"Large amount of cash recovered, no ledger found.",weightRange:[0.1,0.5]},
+      {name:"Medical Card",desc:"Defendant has valid prescription for substance.",weightRange:[-0.8,-0.3]},
+      {name:"Bad Stop",desc:"Traffic stop that led to discovery lacked probable cause.",weightRange:[-0.9,-0.5]},
     ],
     witnesses: [
-      { name: "Officer Brad Dixon", role: "Arresting Officer", text: "I smelled marijuana immediately. The baggies and cash are classic distribution indicators. I've made 40 similar arrests." },
-      { name: "Maria Santos", role: "Defendant's Manager", text: "Darnell is one of my best servers. He makes $200-300 in tips on weekend shifts. He always has cash on him." },
-      { name: "Darnell Jackson", role: "Defendant", text: "I smoke weed to relax after long shifts. The baggies are for my meal prep — I work doubles, I gotta eat. The stop was bogus." }
+      {role:"Arresting Officer",text:"The smell was overwhelming. Plain view doctrine clearly applies here."},
+      {role:"Lab Technician",text:"Confirmed controlled substance with weight over threshold."},
+      {role:"Defendant's Boss",text:"They work double shifts. That cash was tips, I guarantee it."},
+      {role:"Defendant",text:"It is for my chronic pain. I have a valid medical card in my wallet."},
     ],
     sentences: [
-      { label: "Dismissed - Bad Stop", pub: -8, jus: 10 },
-      { label: "$500 Fine - Personal Use", pub: -3, jus: 5 },
-      { label: "6 Months Probation", pub: 2, jus: -2 },
-      { label: "1 Year Jail", pub: 5, jus: -8 }
+      {label:"5 Years Prison",pub:2,jus:2,years:5},
+      {label:"Rehab + Probation",pub:-2,jus:5,years:0},
+      {label:"Fine Only",pub:-5,jus:3,years:0},
+      {label:"Dismissed",pub:-8,jus:10,years:0},
     ]
   },
-  {
-    id: "2026-005", charge: "Manslaughter (Vehicular)", defendant: "Dr. Helen Marsh", pros: "State", def: "High-Profile Defense Attorney", type: "jury", guilty: true,
+  homicide: {
+    labels: ["Manslaughter","Second-Degree Murder","First-Degree Murder"],
+    type: "jury", severity: 9, guiltyBias: 0.6,
     evidence: [
-      { id: "e1", name: "BAC Report (0.09)", desc: "Blood drawn 45 minutes post-crash. Defendant had wine at dinner 3 hours prior. Just over 0.08 legal limit.", weight: 0.6 },
-      { id: "e2", name: "Hospital Call Log", desc: "Hospital confirms Dr. Marsh was NOT on call that night. No emergency surgery was scheduled or requested.", weight: 0.8 },
-      { id: "e3", name: "Traffic Camera Footage", desc: "Video shows defendant's vehicle entering intersection 4 seconds after light turned red at 47 mph in a 35 zone.", weight: 0.7 },
-      { id: "e4", name: "Character References", desc: "Dozens of colleagues and patients describe Dr. Marsh as 'dedicated' and 'life-saving.' No prior incidents.", weight: -0.4 },
-      { id: "e5", name: "Victim's Toxicology", desc: "Pedestrian had 0.14 BAC and was jaywalking at an unmarked crosswalk.", weight: -0.3 }
+      {name:"Ballistics Match",desc:"Weapon matches recovered rounds from scene.",weightRange:[0.5,0.9]},
+      {name:"DNA Evidence",desc:"Defendant's DNA found at crime scene.",weightRange:[0.6,0.9]},
+      {name:"Eyewitness ID",desc:"Witness positively identifies defendant.",weightRange:[0.3,0.7]},
+      {name:"Alibi",desc:"Multiple witnesses confirm defendant was elsewhere.",weightRange:[-0.8,-0.3]},
+      {name:"Motive",desc:"Financial or personal motive established by investigators.",weightRange:[0.2,0.6]},
     ],
     witnesses: [
-      { name: "Det. Frank O'Brien", role: "Accident Reconstruction", text: "She had plenty of time to stop. The light was red for four full seconds. She never touched the brakes." },
-      { name: "Nurse Jackie Tran", role: "Colleague", text: "Helen is the most careful person I know. She would never drive drunk. She saves lives every single day." },
-      { name: "Dr. Helen Marsh", role: "Defendant", text: "I thought I was on call. I panicked. I had two glasses of wine at dinner. I thought I was fine. I am so, so sorry." },
-      { name: "David Park", role: "Victim's Brother", text: "My brother made mistakes, but he didn't deserve to die. She made a choice to get behind that wheel." }
+      {role:"Homicide Detective",text:"All evidence points to one inescapable conclusion."},
+      {role:"Medical Examiner",text:"Cause of death was consistent with the alleged weapon."},
+      {role:"Victim's Family",text:"We have waited so long for justice for our loved one."},
+      {role:"Defendant",text:"I was nowhere near there that night. Someone is framing me."},
     ],
     sentences: [
-      { label: "15 Years Prison", pub: 8, jus: 6 },
-      { label: "8 Years + License Revoked", pub: 5, jus: 5 },
-      { label: "4 Years + House Arrest", pub: 0, jus: 2 },
-      { label: "Probation + Community Service", pub: -5, jus: -5 }
+      {label:"Life Without Parole",pub:8,jus:7,years:99},
+      {label:"25 Years to Life",pub:5,jus:6,years:25},
+      {label:"15 Years + Parole",pub:0,jus:3,years:15},
+      {label:"10 Years",pub:-5,jus:-3,years:10},
     ]
   },
-  {
-    id: "2026-006", charge: "Arson (Insurance Fraud)", defendant: "Gina Moretti", pros: "State", def: "Private Attorney", type: "bench", guilty: true,
+  arson: {
+    labels: ["Arson","Arson (Insurance Fraud)"],
+    type: "bench", severity: 6, guiltyBias: 0.6,
     evidence: [
-      { id: "e1", name: "Accelerant Residue", desc: "Traces of gasoline found near the kitchen entrance. Defendant claims it was for the outdoor grill.", weight: 0.5 },
-      { id: "e2", name: "Financial Records", desc: "Restaurant was $80,000 in debt. Insurance policy was increased from $200K to $340K just 3 weeks before the fire.", weight: 0.8 },
-      { id: "e3", name: "Security System Disabled", desc: "Alarm and cameras were turned off remotely via app at 1:15 AM — from Gina's phone.", weight: 0.9 },
-      { id: "e4", name: "Employee Statements", desc: "Two servers say Gina told them 'something big is coming' and 'don't worry about your paychecks.'", weight: 0.5 },
-      { id: "e5", name: "Fire Marshal Report", desc: "Origin point was the kitchen — consistent with accidental grease fire. No definitive arson finding.", weight: -0.4 }
+      {name:"Accelerant",desc:"Traces of gasoline found at multiple origin points.",weightRange:[0.4,0.8]},
+      {name:"Financial Records",desc:"Insurance policy recently increased significantly.",weightRange:[0.5,0.9]},
+      {name:"Security Logs",desc:"Alarm and camera system disabled remotely before fire.",weightRange:[0.6,0.9]},
+      {name:"Accident Theory",desc:"Electrical fault is a possible alternative cause.",weightRange:[-0.7,-0.3]},
+      {name:"Character Reference",desc:"Community members vouch for defendant's character.",weightRange:[-0.4,-0.1]},
     ],
     witnesses: [
-      { name: "Chief Fire Marshal Royce", role: "Fire Investigator", text: "The origin is consistent with a grease fire, but the gasoline residue and disabled security system are highly suspicious." },
-      { name: "Amber Liu", role: "Former Server", text: "Gina said not to worry about our last two paychecks. She smiled when she said it. It was weird." },
-      { name: "Gina Moretti", role: "Defendant", text: "I turned off the cameras because they were malfunctioning. The gasoline was for our patio grill. This was my dream. I would never burn it down." },
-      { name: "Insurance Adjuster", role: "State Farm", text: "The policy increase was at Ms. Moretti's request, citing kitchen renovations. No renovations were ever done." }
+      {role:"Fire Marshal",text:"The origin pattern is suspicious. This was not a typical accident."},
+      {role:"Insurance Adjuster",text:"The policy was tripled just weeks before the incident."},
+      {role:"Neighbor",text:"I saw them at the property the night before the fire started."},
+      {role:"Defendant",text:"I loved that building. I would never burn down my own property."},
     ],
     sentences: [
-      { label: "12 Years Prison + Restitution", pub: 5, jus: 8 },
-      { label: "8 Years + Fine", pub: 3, jus: 5 },
-      { label: "5 Years + Probation", pub: 0, jus: 2 },
-      { label: "Restitution Only", pub: -5, jus: -5 }
+      {label:"12 Years + Restitution",pub:5,jus:7,years:12},
+      {label:"7 Years + Fine",pub:3,jus:5,years:7},
+      {label:"3 Years + Probation",pub:0,jus:2,years:3},
+      {label:"Restitution Only",pub:-5,jus:-4,years:0},
     ]
   },
-  {
-    id: "2026-007", charge: "False Police Report", defendant: "Chloe Brennan", pros: "State", def: "Public Defender", type: "jury", guilty: false,
+  false_report: {
+    labels: ["False Police Report","Perjury"],
+    type: "jury", severity: 3, guiltyBias: 0.3,
     evidence: [
-      { id: "e1", name: "Parking Garage Video", desc: "No footage of an assault. Defendant is seen walking alone, then running out 10 minutes later visibly distressed.", weight: -0.3 },
-      { id: "e2", name: "Medical Exam", desc: "No physical injuries consistent with assault. However, victim has diagnosed PTSD from prior trauma.", weight: -0.2 },
-      { id: "e3", name: "Text Messages", desc: "Texts to friend sent during the incident: 'Someone is following me' and 'I'm scared.' Sent before any alleged assault.", weight: -0.6 },
-      { id: "e4", name: "Inconsistent Statements", desc: "Victim changed details about attacker's clothing and height between first and second interviews.", weight: 0.4 },
-      { id: "e5", name: "Therapist Records", desc: "Victim has history of dissociative episodes triggered by being in enclosed parking structures. Documented for 3 years.", weight: -0.7 }
+      {name:"Video Footage",desc:"No assault visible on security camera footage.",weightRange:[-0.6,-0.2]},
+      {name:"Medical Exam",desc:"No injuries consistent with reported assault.",weightRange:[-0.5,-0.1]},
+      {name:"Inconsistencies",desc:"Statement changed significantly between interviews.",weightRange:[0.2,0.6]},
+      {name:"Trauma History",desc:"Documented PTSD. Possible dissociative episode.",weightRange:[-0.8,-0.4]},
+      {name:"Text Messages",desc:"Messages sent during alleged incident suggest fear.",weightRange:[-0.7,-0.3]},
     ],
     witnesses: [
-      { name: "Det. Samir Patel", role: "Lead Investigator", text: "Her story changed three times. First he was 6'2\", then 5'9\". First a knife, then no weapon. It doesn't add up." },
-      { name: "Dr. Emily Frost", role: "Clinical Psychologist", text: "Chloe has severe PTSD from a childhood kidnapping. Parking garages are a known trigger. Her memory fragmentation is textbook trauma response." },
-      { name: "Chloe Brennan", role: "Defendant", text: "I know my story was inconsistent. I was terrified. I dissociated. But something happened in there. I felt it. I still feel it." },
-      { name: "Maya Torres", role: "Victim's Friend", text: "She texted me that someone was following her. Then she stopped responding. When she called back, she was screaming." }
+      {role:"Detective",text:"The story changed three times. It does not add up."},
+      {role:"Psychologist",text:"Trauma can cause genuine memory fragmentation and confusion."},
+      {role:"Friend",text:"They were terrified when they called me. Something happened."},
+      {role:"Defendant",text:"I know what I experienced. It was real to me even if details shifted."},
     ],
     sentences: [
-      { label: "Acquitted - Trauma Response", pub: -5, jus: 10 },
-      { label: "Counseling + No Record", pub: 0, jus: 3 },
-      { label: "6 Months Jail", pub: 5, jus: -8 },
-      { label: "1 Year + Fine", pub: 8, jus: -10 }
-    ]
-  },
-  {
-    id: "2026-008", charge: "Second-Degree Murder", defendant: "Tyler Holt", pros: "State", def: "Private Attorney", type: "jury", guilty: true,
-    evidence: [
-      { id: "e1", name: "911 Call", desc: "Defendant called 911 AFTER shooting. On call, he says 'I think I shot a burglar.' Sounds calm, not panicked.", weight: 0.5 },
-      { id: "e2", name: "Victim Identity", desc: "Victim was 16-year-old Jamal Crawford, resident of the home. Had lost his key and was trying to climb through a window.", weight: 0.7 },
-      { id: "e3", name: "Distance of Shot", desc: "Victim was shot from 40 feet away, across the street. Defendant was on his own property, not in immediate danger.", weight: 0.8 },
-      { id: "e4", name: "Social Media Posts", desc: "Defendant had posted about 'standing his ground' and 'protecting the neighborhood' multiple times in past month.", weight: 0.4 },
-      { id: "e5", name: "Neighbor Testimony", desc: "Neighbor says she was inside, saw her son at the window, and was about to open the door when she heard the shot.", weight: 0.6 }
-    ],
-    witnesses: [
-      { name: "Officer Kendra Brooks", role: "First Responder", text: "Mr. Holt was waiting on his porch with the gun on the ground. He said 'I protected my neighborhood.' He didn't seem remorseful." },
-      { name: "Patricia Crawford", role: "Victim's Mother", text: "My baby was trying to get home. Tyler knew us. He knew Jamal. He watched him grow up. How could he?" },
-      { name: "Tyler Holt", role: "Defendant", text: "It was dark. He was climbing through a window. I yelled 'stop' twice. He kept going. I thought he was armed. I was scared." },
-      { name: "Dr. Marcus Webb", role: "Ballistics Expert", text: "The shot was from approximately 40 feet. A handgun at that distance requires deliberate aim. This was not a reflexive shot." }
-    ],
-    sentences: [
-      { label: "Life Without Parole", pub: 10, jus: 8 },
-      { label: "25 Years to Life", pub: 5, jus: 6 },
-      { label: "15 Years + Parole", pub: 0, jus: 3 },
-      { label: "5 Years - Reckless Homicide", pub: -8, jus: -5 }
+      {label:"Acquitted",pub:-3,jus:8,years:0},
+      {label:"Counseling",pub:0,jus:3,years:0},
+      {label:"6 Months",pub:3,jus:-3,years:0.5},
+      {label:"1 Year + Fine",pub:5,jus:-6,years:1},
     ]
   }
-];
-
-let S = {
-  day: 1, salary: 85000, reputation: 50, justice: 50, publicTrust: 50,
-  casesCompleted: 0, currentCaseIndex: 0, selectedEvidence: new Set(),
-  currentWitnessIndex: 0, verdict: null, sentence: null, calendar: []
 };
 
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
+const MEDIA_PRE_HEADLINES = [
+  "Public demands justice in {charge} case involving {defendant}.",
+  "Community outraged over alleged {charge}.",
+  "Prosecutors seek maximum penalty in {charge} trial.",
+  "Defense claims wrongful accusation in {charge} case.",
+  "High-profile {charge} case draws media circus.",
+  "Victims' families speak out ahead of {charge} verdict.",
+  "Legal experts divided on {charge} evidence.",
+  "{defendant} maintains innocence as {charge} trial begins.",
+];
+
+const MEDIA_POST_POSITIVE = [
+  "Justice served: {charge} verdict praised by community.",
+  "Court delivers fair ruling in {charge} case.",
+  "Public applauds balanced approach to {charge} sentencing.",
+  "Legal scholars commend handling of {charge} trial.",
+];
+
+const MEDIA_POST_NEGATIVE = [
+  "Outrage after {charge} verdict called 'travesty of justice'.",
+  "Protests planned following {charge} sentencing.",
+  "Media pundits blast 'soft on crime' {charge} ruling.",
+  "Victims' families devastated by {charge} outcome.",
+  "Calls for judicial review after controversial {charge} verdict.",
+];
+
+const RANKS = [
+  {title:"Magistrate Judge",xpNeed:0,salaryBase:85000,unlock:"Standard trials"},
+  {title:"District Judge",xpNeed:500,salaryBase:110000,unlock:"RICO trials"},
+  {title:"Circuit Judge",xpNeed:1500,salaryBase:140000,unlock:"Capital cases"},
+  {title:"Appellate Judge",xpNeed:3000,salaryBase:180000,unlock:"Appellate review bonus"},
+  {title:"Supreme Court Justice",xpNeed:5000,salaryBase:250000,unlock:"National influence"},
+];
+
+const AGGRAVATING_FACTORS = [
+  {text:"Crime was committed for financial gain.",weight:0.3},
+  {text:"Victim was particularly vulnerable.",weight:0.4},
+  {text:"Crime was especially heinous or cruel.",weight:0.5},
+  {text:"Defendant has prior felony convictions.",weight:0.3},
+  {text:"Crime was committed during another felony.",weight:0.4},
+  {text:"Defendant showed no remorse.",weight:0.2},
+];
+
+const MITIGATING_FACTORS = [
+  {text:"Defendant has no prior criminal history.",weight:-0.3},
+  {text:"Defendant was under extreme mental or emotional disturbance.",weight:-0.4},
+  {text:"Defendant's capacity was substantially impaired.",weight:-0.3},
+  {text:"Defendant was young at the time of the crime.",weight:-0.2},
+  {text:"Defendant acted under duress or domination.",weight:-0.3},
+  {text:"Defendant has shown genuine remorse.",weight:-0.2},
+];
+
+// ==================== STATE ====================
+let S = {};
+
+function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+function randItem(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function randRange(min,max){return Math.random()*(max-min)+min;}
+function randName(){return randItem(FIRST_NAMES)+" "+randItem(LAST_NAMES);}
+
+function getRank(){
+  for(let i=RANKS.length-1;i>=0;i--) if(S.xp>=RANKS[i].xpNeed) return i;
+  return 0;
+}
+
+function getRankInfo(){return RANKS[getRank()];}
+
+function nextRankXP(){
+  const r=getRank();
+  if(r>=RANKS.length-1) return 99999;
+  return RANKS[r+1].xpNeed;
+}
+
+
+// ==================== PROCEDURAL GENERATION ====================
+function generateCase(forceType){
+  const keys=Object.keys(CHARGE_TEMPLATES);
+  let cat=randItem(keys);
+  if(forceType) cat=forceType;
+  const tmpl=CHARGE_TEMPLATES[cat];
+  const chargeLabel=randItem(tmpl.labels);
+
+  let evidence=[];
+  for(const ev of tmpl.evidence){
+    evidence.push({
+      id:"e"+(evidence.length+1),
+      name:ev.name,
+      desc:ev.desc,
+      weight:parseFloat(randRange(ev.weightRange[0],ev.weightRange[1]).toFixed(2))
+    });
   }
-  return a;
+  const totalWeight=evidence.reduce((a,b)=>a+b.weight,0);
+  const guilty=totalWeight>0.4;
+
+  let witnesses=[];
+  for(const wit of tmpl.witnesses){
+    witnesses.push({name:randName(),role:wit.role,text:wit.text});
+  }
+
+  let sentences=[];
+  for(const s of tmpl.sentences) sentences.push({...s});
+
+  const isCapital = (cat==="homicide" && chargeLabel==="First-Degree Murder" && getRank()>=2);
+
+  return {
+    id:"2026-"+randInt(100,999),
+    charge:chargeLabel,
+    defendant:randName(),
+    pros:randItem(["State","Federal","DA's Office","Special Prosecutor"]),
+    def:randItem(["Public Defender","Private Attorney","Defense Firm","Legal Aid"]),
+    type:tmpl.type,
+    guilty:guilty,
+    capital:isCapital,
+    rico:false,
+    evidence:evidence,
+    witnesses:witnesses,
+    sentences:sentences,
+    severity:tmpl.severity,
+    mediaHeadline:"",
+    defendants:null,
+  };
 }
 
-function updateStats() {
-  document.getElementById('st-sal').textContent = '$' + S.salary.toLocaleString();
-  const stars = Math.max(1, Math.min(5, Math.floor(S.reputation / 20)));
-  document.getElementById('st-rep').textContent = '★'.repeat(stars) + '☆'.repeat(5 - stars);
-  document.getElementById('st-day').textContent = S.day;
-  document.getElementById('st-cas').textContent = S.casesCompleted;
-  document.getElementById('st-jus').textContent = S.justice;
-  document.getElementById('bar-jus').style.width = S.justice + '%';
-  document.getElementById('st-tru').textContent = S.publicTrust;
-  document.getElementById('bar-tru').style.width = S.publicTrust + '%';
+function generateRICOCase(){
+  const numDef=randInt(2,4);
+  const defendants=[];
+  for(let i=0;i<numDef;i++){
+    const cat=randItem(["theft","fraud","drugs","homicide"]);
+    const tmpl=CHARGE_TEMPLATES[cat];
+    let devEvidence=[];
+    for(const ev of tmpl.evidence.slice(0,3)){
+      devEvidence.push({
+        id:"d"+i+"e"+(devEvidence.length+1),
+        name:ev.name,
+        desc:ev.desc,
+        weight:parseFloat(randRange(ev.weightRange[0],ev.weightRange[1]).toFixed(2))
+      });
+    }
+    const totalWeight=devEvidence.reduce((a,b)=>a+b.weight,0);
+    defendants.push({
+      name:randName(),
+      charge:randItem(tmpl.labels),
+      guilty:totalWeight>0.3,
+      evidence:devEvidence,
+      witnesses:[
+        {name:randName(),role:"Associate",text:"I saw them at the meetings. They knew what was going on."},
+        {name:randName(),role:"Defendant",text:"I had no idea about the larger operation. I was just trying to survive."},
+      ],
+      verdict:null,
+      sentence:null,
+    });
+  }
+
+  const conspiracyEvidence=[
+    {id:"ce1",name:"Wiretap Recordings",desc:"Multiple defendants heard discussing illegal operations.",weight:0.8},
+    {id:"ce2",name:"Financial Ledgers",desc:"Shared account used to launder proceeds.",weight:0.7},
+    {id:"ce3",name:"Organizational Chart",desc:"Document shows hierarchy and defendant roles.",weight:0.6},
+    {id:"ce4",name:"Cooperating Witness",desc:"Former member testifies about conspiracy structure.",weight:0.5},
+  ];
+
+  return {
+    id:"2026-RICO-"+randInt(10,99),
+    charge:"Racketeering (RICO)",
+    defendant:"Multiple Defendants",
+    pros:"Federal RICO Task Force",
+    def:"Consortium of Defense Attorneys",
+    type:"jury",
+    guilty:true,
+    capital:false,
+    rico:true,
+    evidence:conspiracyEvidence,
+    witnesses:[
+      {name:randName(),role:"FBI Agent",text:"This organization operated for three years across state lines."},
+      {name:randName(),role:"Cooperating Witness",text:"I was there from the start. Everyone at that table knew the deal."},
+    ],
+    sentences:[
+      {label:"20 Years Federal",pub:5,jus:7,years:20},
+      {label:"10 Years + Fine",pub:3,jus:5,years:10},
+      {label:"5 Years + Probation",pub:0,jus:2,years:5},
+      {label:"House Arrest",pub:-5,jus:-4,years:0},
+    ],
+    severity:8,
+    mediaHeadline:"",
+    defendants:defendants,
+  };
 }
 
-function renderCalendar() {
-  const list = document.getElementById('cal-list');
-  let html = '';
-  S.calendar.forEach((c, i) => {
-    html += `<div class="cal-day ${i === S.currentCaseIndex ? 'active' : ''}">
+function generateCapitalCase(){
+  const c=generateCase("homicide");
+  c.charge="Capital Murder";
+  c.capital=true;
+  c.severity=10;
+  c.sentences=[
+    {label:"Death Penalty",pub:10,jus:6,years:99},
+    {label:"Life Without Parole",pub:5,jus:7,years:99},
+    {label:"Life With Parole",pub:0,jus:3,years:99},
+    {label:"30 Years",pub:-5,jus:-3,years:30},
+  ];
+  return c;
+}
+
+function generateMediaHeadline(caseObj,isPost,verdict,sentenceLabel){
+  let h=randItem(MEDIA_PRE_HEADLINES);
+  if(isPost){
+    const just=(verdict==="guilty"&&caseObj.guilty)||(verdict==="not_guilty"&&!caseObj.guilty);
+    h=randItem(just?MEDIA_POST_POSITIVE:MEDIA_POST_NEGATIVE);
+  }
+  h=h.replace(/{charge}/g,caseObj.charge).replace(/{defendant}/g,caseObj.defendant||"defendant");
+  if(sentenceLabel) h+=" Sentence: "+sentenceLabel+".";
+  return h;
+}
+
+// ==================== CORE FUNCTIONS ====================
+function updateStats(){
+  document.getElementById('st-sal').textContent='$'+S.salary.toLocaleString();
+  const stars=Math.max(1,Math.min(5,Math.floor(S.reputation/20)));
+  document.getElementById('st-rep').textContent='★'.repeat(stars)+'☆'.repeat(5-stars);
+  document.getElementById('st-day').textContent=S.day;
+  document.getElementById('st-cas').textContent=S.casesCompleted;
+  document.getElementById('st-med').textContent=S.mediaHeadlines.length;
+  document.getElementById('st-jus').textContent=S.justice;
+  document.getElementById('bar-jus').style.width=S.justice+'%';
+  document.getElementById('st-tru').textContent=S.publicTrust;
+  document.getElementById('bar-tru').style.width=S.publicTrust+'%';
+  document.getElementById('st-pre').textContent=S.mediaPressure;
+  const preBar=document.getElementById('bar-pre');
+  preBar.style.width=S.mediaPressure+'%';
+  preBar.className='progress-fill '+(S.mediaPressure<40?'pressure-low':S.mediaPressure<75?'pressure-med':'pressure-high');
+  document.getElementById('st-xp').textContent=S.xp;
+  const r=getRank();
+  document.getElementById('rank-display').textContent=RANKS[r].title;
+  const nextXP=nextRankXP();
+  const prevXP=RANKS[r].xpNeed;
+  const pct=Math.min(100,Math.max(0,((S.xp-prevXP)/(nextXP-prevXP))*100));
+  document.getElementById('bar-xp').style.width=(r>=RANKS.length-1?100:pct)+'%';
+  document.getElementById('inmate-count').textContent=S.inmates.length+' incarcerated';
+}
+
+function renderCalendar(){
+  const list=document.getElementById('cal-list');
+  let html='';
+  S.calendar.forEach((c,i)=>{
+    let badgeClass='badge-b';
+    if(c.type==='jury') badgeClass='badge-j';
+    if(c.capital) badgeClass='badge-c';
+    if(c.rico) badgeClass='badge-r';
+    let badgeText=c.type==='jury'?'Jury':'Bench';
+    if(c.capital) badgeText='Capital';
+    if(c.rico) badgeText='RICO';
+    html+=`<div class="cal-day ${i===S.currentCaseIndex?'active':''}">
       <div class="cal-title">${c.id}</div>
-      <div class="cal-type">${c.charge} <span class="badge ${c.type === 'jury' ? 'badge-j' : 'badge-b'}">${c.type === 'jury' ? 'Jury' : 'Bench'}</span></div>
+      <div class="cal-type">${c.charge} <span class="badge ${badgeClass}">${badgeText}</span></div>
     </div>`;
   });
-  list.innerHTML = html;
+  list.innerHTML=html||'<em style="font-size:0.75rem;color:#777;">No cases scheduled.</em>';
 }
 
-function setMain(html) {
-  document.getElementById('main-content').innerHTML = html;
+function renderMedia(){
+  const box=document.getElementById('media-box');
+  if(!S.mediaHeadlines.length){box.innerHTML='<em>No active stories.</em>';return;}
+  let html='<div class="media-box"><h4>📰 Headlines</h4>';
+  S.mediaHeadlines.slice(-3).forEach(h=>{
+    html+=`<div class="media-headline">"${h}"</div>`;
+  });
+  html+='</div>';
+  box.innerHTML=html;
 }
 
-function drawStart() {
+function setMain(html){document.getElementById('main-content').innerHTML=html;}
+
+
+// ==================== SCREENS ====================
+function drawStart(){
   setMain(`
     <div class="start-screen">
-      <h2>Welcome to the Bench</h2>
-      <p>You are a newly appointed judge in the State District Court. Every day brings new cases — some require a jury, others rest solely on your judgment. Weigh the evidence, hear the witnesses, and deliver justice. Your reputation and salary depend on it.</p>
-      <button class="btn btn-navy" onclick="startGame()" style="font-size:1.1rem;padding:14px 32px;">Take the Oath & Begin</button>
+      <h2>Welcome to the Bench - Career Edition</h2>
+      <p>You are a newly appointed Magistrate Judge. Build your career from the district court to the Supreme Court. Handle standard trials, RICO conspiracies, capital murder cases, and parole hearings. The media is watching. Justice is in your hands.</p>
+      <div style="background:#f5e6c8;border-radius:8px;padding:14px;margin:16px auto;max-width:420px;text-align:left;font-size:0.85rem;">
+        <strong>Features:</strong><br>
+        • Career progression (5 ranks)<br>
+        • Procedural case generation (infinite variety)<br>
+        • Media pressure & public opinion<br>
+        • Multi-defendant RICO trials<br>
+        • Death penalty phases<br>
+        • Parole hearings & inmate roster<br>
+      </div>
+      <button class="btn btn-navy" onclick="startGame()" style="font-size:1rem;padding:12px 28px;">Take the Oath & Begin</button>
     </div>
   `);
 }
 
-function startGame() {
-  S = {
-    day: 1, salary: 85000, reputation: 50, justice: 50, publicTrust: 50,
-    casesCompleted: 0, currentCaseIndex: 0, selectedEvidence: new Set(),
-    currentWitnessIndex: 0, verdict: null, sentence: null, calendar: shuffle([...CASES])
+function startGame(){
+  S={
+    day:1,salary:85000,reputation:50,justice:50,publicTrust:50,mediaPressure:0,xp:0,
+    casesCompleted:0,currentCaseIndex:0,selectedEvidence:new Set(),currentWitnessIndex:0,
+    verdict:null,sentence:null,calendar:[],inmates:[],mediaHeadlines:[],
+    currentScreen:'hub',ricoVerdicts:{},currentDefendantIndex:0,
   };
+  fillCalendar();
   updateStats();
   renderCalendar();
-  loadCase(0);
+  renderMedia();
+  drawHub();
 }
 
-function loadCase(index) {
-  if (index >= S.calendar.length) { endGame(); return; }
-  S.currentCaseIndex = index;
+function fillCalendar(){
+  S.calendar=[];
+  const count=randInt(4,6);
+  for(let i=0;i<count;i++){
+    let c;
+    const r=getRank();
+    const roll=Math.random();
+    if(r>=1 && roll<0.15) c=generateRICOCase();
+    else if(r>=2 && roll<0.25) c=generateCapitalCase();
+    else c=generateCase();
+    c.mediaHeadline=generateMediaHeadline(c,false);
+    S.calendar.push(c);
+  }
+}
+
+function drawHub(){
+  S.currentScreen='hub';
+  const rank=getRank();
+  const nextRank=RANKS[Math.min(rank+1,RANKS.length-1)];
+  setMain(`
+    <div class="card"><h3>🏛️ Judge's Chambers - Day ${S.day}</h3>
+      <div class="meta">
+        <strong>Current Rank:</strong> ${RANKS[rank].title}<br>
+        <strong>Next Rank:</strong> ${rank>=RANKS.length-1?'Max Rank':nextRank.title+' ('+nextRank.xpNeed+' XP)'}<br>
+        <strong>Cases on Docket:</strong> ${S.calendar.length}<br>
+        <strong>Inmates:</strong> ${S.inmates.length}
+      </div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-card" onclick="startNextCase()">
+        <div class="hub-icon">⚖️</div>
+        <h4>Hold Trial</h4>
+        <p>Next case: ${S.calendar[S.currentCaseIndex]?S.calendar[S.currentCaseIndex].charge:'None'}</p>
+      </div>
+      <div class="hub-card" onclick="checkParole()">
+        <div class="hub-icon">🔓</div>
+        <h4>Parole Hearing</h4>
+        <p>Review eligible inmates for early release</p>
+      </div>
+      <div class="hub-card" onclick="showRoster()">
+        <div class="hub-icon">📋</div>
+        <h4>Inmate Roster</h4>
+        <p>View all incarcerated defendants</p>
+      </div>
+      <div class="hub-card" onclick="advanceDay()">
+        <div class="hub-icon">📅</div>
+        <h4>Next Day</h4>
+        <p>Advance time, check for new developments</p>
+      </div>
+    </div>
+    ${S.mediaHeadlines.length?`<div class="media-box"><h4>📰 Latest Headline</h4><div class="media-headline">"${S.mediaHeadlines[S.mediaHeadlines.length-1]}"</div></div>`:''}
+  `);
+}
+
+function startNextCase(){
+  if(S.currentCaseIndex>=S.calendar.length){
+    fillCalendar();
+    S.currentCaseIndex=0;
+    updateStats();
+    renderCalendar();
+  }
+  loadCase(S.currentCaseIndex);
+}
+
+function loadCase(index){
+  if(index>=S.calendar.length){drawHub();return;}
+  S.currentCaseIndex=index;
   S.selectedEvidence.clear();
-  S.currentWitnessIndex = 0;
-  S.verdict = null;
-  S.sentence = null;
+  S.currentWitnessIndex=0;
+  S.verdict=null;
+  S.sentence=null;
+  S.ricoVerdicts={};
+  S.currentDefendantIndex=0;
   updateStats();
   renderCalendar();
 
-  const c = S.calendar[index];
-  let html = `<div class="card">
-    <h3>Case #${c.id} <span class="badge ${c.type === 'jury' ? 'badge-j' : 'badge-b'}">${c.type === 'jury' ? 'Jury Trial' : 'Bench Trial'}</span></h3>
+  const c=S.calendar[index];
+  S.mediaPressure=Math.min(100,S.mediaPressure+randInt(5,15));
+
+  let html=`<div class="card">
+    <h3>Case #${c.id} `;
+  if(c.rico) html+=`<span class="badge badge-r">RICO</span>`;
+  else if(c.capital) html+=`<span class="badge badge-c">Capital</span>`;
+  else html+=`<span class="badge ${c.type==='jury'?'badge-j':'badge-b'}">${c.type==='jury'?'Jury':'Bench'}</span>`;
+  html+=`</h3>
     <div class="meta">
       <strong>Charge:</strong> ${c.charge}<br>
       <strong>Defendant:</strong> ${c.defendant}<br>
@@ -537,186 +992,555 @@ function loadCase(index) {
       <strong>Defense:</strong> ${c.def}
     </div>`;
 
-  if (c.type === 'jury') {
-    let gv = 0;
-    c.evidence.forEach(e => { if (e.weight > 0.3) gv++; else if (e.weight < -0.3) gv--; });
-    gv = Math.max(3, Math.min(10, gv + 6));
-    html += `<div class="jury-box">
+  if(c.type==='jury'&&!c.rico){
+    let gv=0;
+    c.evidence.forEach(e=>{if(e.weight>0.3)gv++;else if(e.weight<-0.3)gv--;});
+    gv=Math.max(3,Math.min(10,gv+6));
+    html+=`<div class="jury-box">
       <h4>🧑‍⚖️ Jury Deliberation</h4>
       <div class="jury-row">
-        <span>Guilty Votes: <span style="color:#ef5350;font-weight:bold;">${gv}</span>/12</span>
-        <span>Innocent Votes: <span style="color:#66bb6a;font-weight:bold;">${12 - gv}</span>/12</span>
+        <span>Guilty: <span style="color:#ef5350;font-weight:bold;">${gv}</span>/12</span>
+        <span>Not Guilty: <span style="color:#66bb6a;font-weight:bold;">${12-gv}</span>/12</span>
       </div>
     </div>`;
   }
-  html += `</div>`;
+  html+=`</div>`;
 
-  html += `<div class="card"><h3>📁 Evidence <span style="font-size:0.8rem;color:#666;font-weight:normal;">(click to read details)</span></h3>`;
-  c.evidence.forEach((e, idx) => {
-    html += `<div class="evidence-item" onclick="toggleEvidence(${idx})" id="ev-tag-${idx}">${e.name}</div>
+  if(c.rico&&c.defendants){
+    html+=`<div class="card"><h3>🎯 Conspiracy Evidence</h3>`;
+    c.evidence.forEach((e,idx)=>{
+      html+=`<div class="evidence-item" onclick="toggleEvidence(${idx})" id="ev-tag-${idx}">${e.name}</div>
              <div class="evidence-desc" id="ev-desc-${idx}">${e.desc}</div>`;
-  });
-  html += `</div>`;
+    });
+    html+=`</div>`;
+    html+=`<div class="card"><h3>👥 Co-Defendants</h3>`;
+    c.defendants.forEach((d,didx)=>{
+      html+=`<div class="defendant-row" id="def-row-${didx}">
+        <h4>${d.name} — ${d.charge}</h4>
+        <div style="font-size:0.8rem;color:#555;margin-bottom:6px;">Evidence: ${d.evidence.map(e=>e.name).join(', ')}</div>
+        <div class="verdict-btns">
+          <button class="btn btn-green" style="font-size:0.75rem;padding:5px 10px;" onclick="setRICOVerdict(${didx},'guilty')">Guilty</button>
+          <button class="btn btn-red" style="font-size:0.75rem;padding:5px 10px;" onclick="setRICOVerdict(${didx},'not_guilty')">Not Guilty</button>
+          <span id="rico-v-${didx}" style="margin-left:10px;font-weight:bold;font-size:0.85rem;"></span>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+    html+=`<div style="margin-top:8px;text-align:center;">
+      <button class="btn btn-navy" onclick="confirmRICOVerdicts()">Deliver Verdicts</button>
+    </div>`;
+  } else {
+    html+=`<div class="card"><h3>📁 Evidence <span style="font-size:0.75rem;color:#666;font-weight:normal;">(click to examine)</span></h3>`;
+    c.evidence.forEach((e,idx)=>{
+      html+=`<div class="evidence-item" onclick="toggleEvidence(${idx})" id="ev-tag-${idx}">${e.name}</div>
+             <div class="evidence-desc" id="ev-desc-${idx}">${e.desc} <em style="color:#777;">(Weight: ${e.weight>0?'+':''}${e.weight})</em></div>`;
+    });
+    html+=`</div>`;
 
-  html += `<div class="card"><h3>🎤 Witness Testimony</h3><div id="wit-box"></div>
-    <button class="btn btn-wood" onclick="nextWitness()">Next Witness</button>
-  </div>`;
+    html+=`<div class="card"><h3>🎤 Witness Testimony</h3><div id="wit-box"></div>
+      <button class="btn btn-wood" onclick="nextWitness()">Next Witness</button>
+    </div>`;
 
-  html += `<div style="margin-top:8px;">
-    <button class="btn btn-green" onclick="doVerdict('guilty')">⚖️ Guilty</button>
-    <button class="btn btn-red" onclick="doVerdict('not_guilty')">✋ Not Guilty</button>
-  </div>`;
-
-  setMain(html);
-  drawWitnesses();
-}
-
-function toggleEvidence(idx) {
-  const tag = document.getElementById('ev-tag-' + idx);
-  const desc = document.getElementById('ev-desc-' + idx);
-  const e = S.calendar[S.currentCaseIndex].evidence[idx];
-  tag.classList.toggle('selected');
-  desc.classList.toggle('open');
-  if (S.selectedEvidence.has(e.id)) S.selectedEvidence.delete(e.id);
-  else S.selectedEvidence.add(e.id);
-}
-
-function drawWitnesses() {
-  const c = S.calendar[S.currentCaseIndex];
-  const box = document.getElementById('wit-box');
-  if (!box) return;
-  let html = '';
-  for (let i = 0; i <= S.currentWitnessIndex && i < c.witnesses.length; i++) {
-    const w = c.witnesses[i];
-    html += `<div class="witness">
-      <div class="witness-name">${w.name}</div>
-      <div class="witness-role">${w.role}</div>
-      <div class="witness-text">"${w.text}"</div>
+    html+=`<div style="margin-top:8px;">
+      <button class="btn btn-green" onclick="doVerdict('guilty')">⚖️ Guilty</button>
+      <button class="btn btn-red" onclick="doVerdict('not_guilty')">✋ Not Guilty</button>
     </div>`;
   }
-  box.innerHTML = html;
+
+  if(c.mediaHeadline){
+    html=`<div class="media-box"><h4>📰 Media Pressure</h4><div class="media-headline">"${c.mediaHeadline}"</div>
+      <div class="pressure-bar"><span>Pressure:</span><div class="pressure-track"><div class="pressure-fill ${S.mediaPressure<40?'pressure-low':S.mediaPressure<75?'pressure-med':'pressure-high'}" style="width:${S.mediaPressure}%"></div></div><span>${S.mediaPressure}%</span></div>
+    </div>`+html;
+  }
+
+  setMain(html);
+  if(!c.rico) drawWitnesses();
 }
 
-function nextWitness() {
-  const c = S.calendar[S.currentCaseIndex];
-  if (S.currentWitnessIndex < c.witnesses.length - 1) {
+function toggleEvidence(idx){
+  const c=S.calendar[S.currentCaseIndex];
+  const tag=document.getElementById('ev-tag-'+idx);
+  const desc=document.getElementById('ev-desc-'+idx);
+  if(!tag)return;
+  tag.classList.toggle('selected');
+  desc.classList.toggle('open');
+  const ev=c.rico?c.evidence[idx]:c.evidence[idx];
+  if(S.selectedEvidence.has(ev.id)) S.selectedEvidence.delete(ev.id);
+  else S.selectedEvidence.add(ev.id);
+}
+
+function drawWitnesses(){
+  const c=S.calendar[S.currentCaseIndex];
+  const box=document.getElementById('wit-box');
+  if(!box)return;
+  let html='';
+  for(let i=0;i<=S.currentWitnessIndex&&i<c.witnesses.length;i++){
+    const w=c.witnesses[i];
+    html+=`<div class="witness"><div class="witness-name">${w.name}</div><div class="witness-role">${w.role}</div><div class="witness-text">"${w.text}"</div></div>`;
+  }
+  box.innerHTML=html;
+}
+
+function nextWitness(){
+  const c=S.calendar[S.currentCaseIndex];
+  if(S.currentWitnessIndex<c.witnesses.length-1){
     S.currentWitnessIndex++;
     drawWitnesses();
   }
 }
 
-function doVerdict(v) {
-  S.verdict = v;
-  const c = S.calendar[S.currentCaseIndex];
-  if (v === 'not_guilty') { showResult(); return; }
-
-  let html = `<div class="card"><h3>⚖️ Sentencing</h3>
-    <p><strong>${c.defendant}</strong> has been found <strong style="color:#b71c1c;">GUILTY</strong> of <strong>${c.charge}</strong>.</p>
-    <p>The court now proceeds to sentencing. Consider the severity of the crime, the defendant's background, public safety, and the interests of justice.</p>
-    <div style="background:#f5e6c8;border:2px solid #b8860b;border-radius:8px;padding:16px;text-align:center;margin-top:12px;">
-      <div style="font-weight:bold;color:#3e2723;margin-bottom:10px;">Select Sentence</div>`;
-  c.sentences.forEach((s, i) => {
-    html += `<button class="sentence-btn" onclick="selectSentence(${i})" id="snt-${i}">${s.label}</button>`;
-  });
-  html += `</div>
-    <div style="text-align:center;margin-top:14px;">
-      <button class="btn btn-navy" onclick="confirmSentence()">Deliver Sentence</button>
-    </div>
-  </div>`;
-  setMain(html);
-  S.sentence = null;
-}
-
-function selectSentence(i) {
-  S.sentence = i;
-  document.querySelectorAll('.sentence-btn').forEach(b => b.classList.remove('selected'));
-  document.getElementById('snt-' + i).classList.add('selected');
-}
-
-function confirmSentence() {
-  if (S.sentence === null) {
-    alert('Please select a sentence first.');
+function doVerdict(v){
+  S.verdict=v;
+  const c=S.calendar[S.currentCaseIndex];
+  if(v==='not_guilty'){showResult();return;}
+  if(c.capital){
+    showDeathPenaltyPhase();
     return;
   }
+  let html=`<div class="card"><h3>⚖️ Sentencing</h3>
+    <p><strong>${c.defendant}</strong> found <strong style="color:#b71c1c;">GUILTY</strong> of <strong>${c.charge}</strong>.</p>
+    <p>Consider severity, public safety, and justice.</p>
+    <div style="background:#f5e6c8;border:2px solid #b8860b;border-radius:8px;padding:14px;text-align:center;margin-top:10px;">
+      <div style="font-weight:bold;color:#3e2723;margin-bottom:8px;">Select Sentence</div>`;
+  c.sentences.forEach((s,i)=>{
+    html+=`<button class="sentence-btn" onclick="selectSentence(${i})" id="snt-${i}">${s.label}</button>`;
+  });
+  html+=`</div><div style="text-align:center;margin-top:12px;"><button class="btn btn-navy" onclick="confirmSentence()">Deliver Sentence</button></div></div>`;
+  setMain(html);
+  S.sentence=null;
+}
+
+function selectSentence(i){
+  S.sentence=i;
+  document.querySelectorAll('.sentence-btn').forEach(b=>b.classList.remove('selected'));
+  const el=document.getElementById('snt-'+i);
+  if(el) el.classList.add('selected');
+}
+
+function confirmSentence(){
+  if(S.sentence===null){alert('Please select a sentence first.');return;}
   showResult();
 }
 
-function showResult() {
-  const c = S.calendar[S.currentCaseIndex];
-  const isG = S.verdict === 'guilty';
-  const act = c.guilty;
-  let jd = 0, td = 0, sd = 0, rd = 0, cls, title, txt;
 
-  if (isG && act) {
-    cls = 'result-just'; title = '⚖️ Just Verdict';
-    txt = `The evidence supported conviction. ${c.defendant} committed the crime as charged.`;
-    jd = 8; td = 5; rd = 5; sd = 1200;
-  } else if (!isG && !act) {
-    cls = 'result-just'; title = '⚖️ Just Verdict';
-    txt = `The evidence did not support conviction. ${c.defendant} was wrongfully accused.`;
-    jd = 10; td = 3; rd = 6; sd = 1500;
-  } else if (isG && !act) {
-    cls = 'result-unjust'; title = '❌ Wrongful Conviction';
-    txt = `${c.defendant} was innocent. The evidence was misleading or insufficient. A grave injustice.`;
-    jd = -12; td = -8; rd = -8; sd = -2000;
-  } else {
-    cls = 'result-unjust'; title = '❌ Guilty Walks Free';
-    txt = `${c.defendant} was guilty but acquitted. The evidence was there — justice was not served.`;
-    jd = -10; td = -5; rd = -6; sd = -1500;
+// ==================== DEATH PENALTY PHASE ====================
+function showDeathPenaltyPhase(){
+  const c=S.calendar[S.currentCaseIndex];
+  const ags=[];
+  const mis=[];
+  const used=new Set();
+  while(ags.length<3){
+    const f=randItem(AGGRAVATING_FACTORS);
+    if(!used.has(f.text)){ags.push(f);used.add(f.text);}
   }
-
-  if (isG && act && S.sentence !== null) {
-    const sn = c.sentences[S.sentence];
-    jd += sn.jus; td += sn.pub;
-    txt += `<br><br><strong>Sentence:</strong> ${sn.label}`;
+  while(mis.length<3){
+    const f=randItem(MITIGATING_FACTORS);
+    if(!used.has(f.text)){mis.push(f);used.add(f.text);}
   }
+  let agTotal=ags.reduce((a,b)=>a+b.weight,0);
+  let miTotal=mis.reduce((a,b)=>a+b.weight,0);
+  let rec=agTotal+miTotal>0.3?"Death":"Life Imprisonment";
 
-  S.justice = Math.max(0, Math.min(100, S.justice + jd));
-  S.publicTrust = Math.max(0, Math.min(100, S.publicTrust + td));
-  S.reputation = Math.max(0, Math.min(100, S.reputation + rd));
-  S.salary = Math.max(40000, S.salary + sd);
+  let html=`<div class="card"><h3>☠️ Death Penalty Phase</h3>
+    <p><strong>${c.defendant}</strong> has been found <strong style="color:#b71c1c;">GUILTY</strong> of <strong>${c.charge}</strong>.</p>
+    <p>The jury must now determine whether the aggravating circumstances outweigh the mitigating circumstances.</p>
+  </div>`;
+
+  html+=`<div class="dp-phase"><h4 style="margin:0 0 8px 0;color:#b71c1c;">⚠️ Aggravating Factors</h4>`;
+  ags.forEach(a=>{
+    html+=`<div class="factor-box factor-ag">${a.text} <em style="color:#777;">(Weight: +${a.weight})</em></div>`;
+  });
+  html+=`</div>`;
+
+  html+=`<div class="card" style="border-color:#1b5e20;"><h4 style="margin:0 0 8px 0;color:#1b5e20;">✅ Mitigating Factors</h4>`;
+  mis.forEach(m=>{
+    html+=`<div class="factor-box factor-mi">${m.text} <em style="color:#777;">(Weight: ${m.weight})</em></div>`;
+  });
+  html+=`</div>`;
+
+  html+=`<div class="card"><h4>🧑‍⚖️ Jury Recommendation</h4>
+    <p>The jury recommends: <strong style="color:${rec==='Death'?'#b71c1c':'#1b5e20'};">${rec}</strong></p>
+    <p>You may accept or override this recommendation. The final decision rests with the court.</p>
+    <div style="text-align:center;margin-top:10px;">
+      <button class="btn btn-red" onclick="selectDPSentence(0)">Death Penalty</button>
+      <button class="btn btn-navy" onclick="selectDPSentence(1)">Life Without Parole</button>
+      <button class="btn btn-green" onclick="selectDPSentence(2)">Life With Parole</button>
+      <button class="btn btn-wood" onclick="selectDPSentence(3)">30 Years</button>
+    </div>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="btn btn-gold" onclick="confirmDPSentence()">Deliver Final Sentence</button>
+    </div>
+  </div>`;
+
+  setMain(html);
+  S.sentence=null;
+}
+
+function selectDPSentence(i){
+  S.sentence=i;
+  document.querySelectorAll('.btn-red,.btn-navy,.btn-green,.btn-wood').forEach(b=>b.style.outline='none');
+  const btns=document.querySelectorAll('.content .btn');
+  const target=[btns[btns.length-5],btns[btns.length-4],btns[btns.length-3],btns[btns.length-2]][i];
+  if(target) target.style.outline='3px solid #ffd700';
+}
+
+function confirmDPSentence(){
+  if(S.sentence===null){alert('Please select a sentence first.');return;}
+  showResult();
+}
+
+// ==================== RICO VERDICTS ====================
+function setRICOVerdict(didx,verdict){
+  S.ricoVerdicts[didx]=verdict;
+  const span=document.getElementById('rico-v-'+didx);
+  if(span) span.textContent=verdict==='guilty'?'GUILTY':'NOT GUILTY';
+  if(span) span.style.color=verdict==='guilty'?'#b71c1c':'#1b5e20';
+}
+
+function confirmRICOVerdicts(){
+  const c=S.calendar[S.currentCaseIndex];
+  if(!c.defendants) return;
+  let allSet=true;
+  for(let i=0;i<c.defendants.length;i++){
+    if(S.ricoVerdicts[i]===undefined){allSet=false;break;}
+  }
+  if(!allSet){alert('Please render a verdict for every defendant.');return;}
+  showRICOResult();
+}
+
+function showRICOResult(){
+  const c=S.calendar[S.currentCaseIndex];
+  let jd=0,td=0,sd=0,rd=0;
+  let html=`<div class="card"><h3>📜 RICO Verdicts Delivered</h3>`;
+
+  c.defendants.forEach((d,i)=>{
+    const v=S.ricoVerdicts[i];
+    const just=(v==='guilty'&&d.guilty)||(v==='not_guilty'&&!d.guilty);
+    if(just){jd+=5;td+=2;rd+=3;sd+=800;}
+    else if(v==='guilty'&&!d.guilty){jd-=8;td-=5;rd-=5;sd-=1200;}
+    else{jd-=6;td-=3;rd-=4;sd-=800;}
+
+    html+=`<div class="${just?'result-just':'result-unjust'}" style="text-align:left;margin-bottom:8px;">
+      <strong>${d.name}</strong> — ${d.charge}: <strong>${v==='guilty'?'GUILTY':'NOT GUILTY'}</strong>
+      ${just?'✓ Just':'✗ Unjust'}
+    </div>`;
+
+    if(v==='guilty'&&d.guilty){
+      const sn=randItem(c.sentences);
+      S.inmates.push({
+        name:d.name,charge:d.charge,sentence:sn.years,sentenceDay:S.day,
+        behavior:randInt(30,90),remorse:randInt(20,80),timeServed:0,eligible:false,id:randInt(1000,9999)
+      });
+    }
+  });
+
+  html+=`</div>`;
+
+  // Media
+  const postHeadline=generateMediaHeadline(c,true,'mixed');
+  S.mediaHeadlines.push(postHeadline);
+  S.mediaPressure=Math.max(0,S.mediaPressure-10);
+
+  S.justice=Math.max(0,Math.min(100,S.justice+jd));
+  S.publicTrust=Math.max(0,Math.min(100,S.publicTrust+td));
+  S.reputation=Math.max(0,Math.min(100,S.reputation+rd));
+  S.salary=Math.max(40000,S.salary+sd);
+  S.xp+=just?50:20;
   S.casesCompleted++;
   S.day++;
+  S.currentCaseIndex++;
 
-  let html = `<div class="card"><h3>📜 Case Closed</h3>
+  html+=`<div class="stat-grid">
+    <div class="stat-box"><div style="color:#666;">Justice</div><div class="num" style="color:${jd>=0?'#1b5e20':'#b71c1c'}">${jd>0?'+':''}${jd}</div></div>
+    <div class="stat-box"><div style="color:#666;">Public Trust</div><div class="num" style="color:${td>=0?'#1b5e20':'#b71c1c'}">${td>0?'+':''}${td}</div></div>
+    <div class="stat-box"><div style="color:#666;">Reputation</div><div class="num" style="color:${rd>=0?'#1b5e20':'#b71c1c'}">${rd>0?'+':''}${rd}</div></div>
+    <div class="stat-box"><div style="color:#666;">Salary</div><div class="num" style="color:${sd>=0?'#1b5e20':'#b71c1c'}">${sd>0?'+':''}$${sd.toLocaleString()}</div></div>
+  </div>`;
+  html+=`<div style="text-align:center;margin-top:14px;"><button class="btn btn-navy" onclick="drawHub()">Return to Chambers</button></div>`;
+
+  setMain(html);
+  updateStats();
+  renderCalendar();
+  renderMedia();
+}
+
+// ==================== RESULT ====================
+function showResult(){
+  const c=S.calendar[S.currentCaseIndex];
+  const isG=S.verdict==='guilty';
+  const act=c.guilty;
+  let jd=0,td=0,sd=0,rd=0,cls,title,txt;
+
+  if(isG&&act){
+    cls='result-just'; title='⚖️ Just Verdict';
+    txt=`Evidence supported conviction. ${c.defendant} committed the crime.`;
+    jd=8; td=5; rd=5; sd=1200;
+  }else if(!isG&&!act){
+    cls='result-just'; title='⚖️ Just Verdict';
+    txt=`Evidence did not support conviction. ${c.defendant} was wrongfully accused.`;
+    jd=10; td=3; rd=6; sd=1500;
+  }else if(isG&&!act){
+    cls='result-unjust'; title='❌ Wrongful Conviction';
+    txt=`${c.defendant} was innocent. The evidence was misleading. A grave injustice.`;
+    jd=-12; td=-8; rd=-8; sd=-2000;
+  }else{
+    cls='result-unjust'; title='❌ Guilty Walks Free';
+    txt=`${c.defendant} was guilty but acquitted. Justice was not served.`;
+    jd=-10; td=-5; rd=-6; sd=-1500;
+  }
+
+  let sentenceLabel='';
+  if(isG&&act&&S.sentence!==null){
+    const sn=c.sentences[S.sentence];
+    jd+=sn.jus; td+=sn.pub;
+    sentenceLabel=sn.label;
+    txt+=`<br><br><strong>Sentence:</strong> ${sn.label}`;
+    if(sn.years>0){
+      S.inmates.push({
+        name:c.defendant,charge:c.charge,sentence:sn.years,sentenceDay:S.day,
+        behavior:randInt(30,90),remorse:randInt(20,80),timeServed:0,eligible:false,id:randInt(1000,9999)
+      });
+    }
+  }
+
+  if(c.capital&&isG&&act&&S.sentence!==null){
+    const opts=["Death Penalty","Life Without Parole","Life With Parole","30 Years"];
+    sentenceLabel=opts[S.sentence];
+    txt+=`<br><br><strong>Sentence:</strong> ${sentenceLabel}`;
+    const years=[99,99,99,30][S.sentence];
+    S.inmates.push({
+      name:c.defendant,charge:c.charge,sentence:years,sentenceDay:S.day,
+      behavior:randInt(20,70),remorse:randInt(10,60),timeServed:0,eligible:false,id:randInt(1000,9999),capital:true
+    });
+  }
+
+  // Media pressure multiplier
+  const pressureMult=1+(S.mediaPressure/200);
+  if(jd<0){jd=Math.round(jd*pressureMult);td=Math.round(td*pressureMult);}
+  else{jd=Math.round(jd/pressureMult);}
+
+  // Post-verdict media
+  const postHeadline=generateMediaHeadline(c,true,S.verdict,sentenceLabel);
+  S.mediaHeadlines.push(postHeadline);
+  S.mediaPressure=Math.max(0,S.mediaPressure-10);
+
+  S.justice=Math.max(0,Math.min(100,S.justice+jd));
+  S.publicTrust=Math.max(0,Math.min(100,S.publicTrust+td));
+  S.reputation=Math.max(0,Math.min(100,S.reputation+rd));
+  S.salary=Math.max(40000,S.salary+sd);
+  S.xp+=(isG&&act)||(!isG&&!act)?randInt(40,70):randInt(10,30);
+  S.casesCompleted++;
+  S.day++;
+  S.currentCaseIndex++;
+
+  let html=`<div class="card"><h3>📜 Case Closed</h3>
     <div class="${cls}">
-      <div style="font-size:1.2rem;margin-bottom:6px;">${title}</div>
-      <div style="font-size:0.95rem;">${txt}</div>
+      <div style="font-size:1.1rem;margin-bottom:6px;">${title}</div>
+      <div style="font-size:0.9rem;">${txt}</div>
     </div>
     <div class="stat-grid">
-      <div class="stat-box"><div style="color:#666;">Justice</div><div class="num" style="color:${jd >= 0 ? '#1b5e20' : '#b71c1c'}">${jd > 0 ? '+' : ''}${jd}</div></div>
-      <div class="stat-box"><div style="color:#666;">Public Trust</div><div class="num" style="color:${td >= 0 ? '#1b5e20' : '#b71c1c'}">${td > 0 ? '+' : ''}${td}</div></div>
-      <div class="stat-box"><div style="color:#666;">Reputation</div><div class="num" style="color:${rd >= 0 ? '#1b5e20' : '#b71c1c'}">${rd > 0 ? '+' : ''}${rd}</div></div>
-      <div class="stat-box"><div style="color:#666;">Salary</div><div class="num" style="color:${sd >= 0 ? '#1b5e20' : '#b71c1c'}">${sd > 0 ? '+' : ''}$${sd.toLocaleString()}</div></div>
+      <div class="stat-box"><div style="color:#666;">Justice</div><div class="num" style="color:${jd>=0?'#1b5e20':'#b71c1c'}">${jd>0?'+':''}${jd}</div></div>
+      <div class="stat-box"><div style="color:#666;">Public Trust</div><div class="num" style="color:${td>=0?'#1b5e20':'#b71c1c'}">${td>0?'+':''}${td}</div></div>
+      <div class="stat-box"><div style="color:#666;">Reputation</div><div class="num" style="color:${rd>=0?'#1b5e20':'#b71c1c'}">${rd>0?'+':''}${rd}</div></div>
+      <div class="stat-box"><div style="color:#666;">Salary</div><div class="num" style="color:${sd>=0?'#1b5e20':'#b71c1c'}">${sd>0?'+':''}$${sd.toLocaleString()}</div></div>
     </div>
-    <div style="text-align:center;margin-top:16px;">
-      <button class="btn btn-navy" onclick="loadCase(${S.currentCaseIndex + 1})">Next Case on Docket</button>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="btn btn-navy" onclick="drawHub()">Return to Chambers</button>
+    </div>
+  </div>`;
+  setMain(html);
+  updateStats();
+  renderCalendar();
+  renderMedia();
+}
+
+
+// ==================== PAROLE SYSTEM ====================
+function getEligibleInmates(){
+  return S.inmates.filter(imm=>{
+    const servedPct=imm.timeServed/Math.max(1,imm.sentence);
+    return servedPct>=0.5 && !imm.eligible && imm.sentence>0.5;
+  });
+}
+
+function checkParole(){
+  const eligible=getEligibleInmates();
+  if(!eligible.length){
+    setMain(`<div class="card"><h3>🔓 Parole Board</h3>
+      <p>No inmates are currently eligible for parole review.</p>
+      <p>Inmates become eligible after serving 50% of their sentence.</p>
+      <button class="btn btn-navy" onclick="drawHub()">Back</button>
+    </div>`);
+    return;
+  }
+  showParole(eligible[0]);
+}
+
+function showParole(inmate){
+  S.currentParoleInmate=inmate;
+  const servedPct=Math.round((inmate.timeServed/Math.max(1,inmate.sentence))*100);
+  const rec=inmate.behavior>70&&inmate.remorse>50?"GRANT":"DENY";
+
+  let html=`<div class="parole-card"><h3>🔓 Parole Hearing</h3>
+    <div class="parole-stat"><strong>Inmate:</strong> <span>${inmate.name}</span></div>
+    <div class="parole-stat"><strong>Charge:</strong> <span>${inmate.charge}</span></div>
+    <div class="parole-stat"><strong>Sentence:</strong> <span>${inmate.sentence>=99?'Life':inmate.sentence+' Years'}</span></div>
+    <div class="parole-stat"><strong>Time Served:</strong> <span>${inmate.timeServed} days (${servedPct}%)</span></div>
+    <div class="parole-stat"><strong>Behavior Score:</strong> <span>${inmate.behavior}/100</span></div>
+    <div class="parole-stat"><strong>Remorse Score:</strong> <span>${inmate.remorse}/100</span></div>
+    <div class="parole-stat"><strong>Board Recommendation:</strong> <span style="color:${rec==='GRANT'?'#1b5e20':'#b71c1c'};font-weight:bold;">${rec}</span></div>
+  </div>`;
+
+  html+=`<div class="card"><h4>📋 Institutional Report</h4>
+    <p style="font-size:0.85rem;color:#444;">${inmate.name} has ${inmate.behavior>70?'maintained excellent conduct':'had several disciplinary incidents'} while incarcerated. 
+    ${inmate.remorse>50?'Psychological evaluations indicate genuine remorse and rehabilitation.':'The inmate shows limited remorse for their crimes.'}</p>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="btn btn-green" onclick="doParole('grant')">Grant Parole</button>
+      <button class="btn btn-red" onclick="doParole('deny')">Deny Parole</button>
+    </div>
+  </div>`;
+
+  setMain(html);
+}
+
+function doParole(decision){
+  const imm=S.currentParoleInmate;
+  if(!imm)return;
+  imm.eligible=true;
+
+  const goodCandidate=imm.behavior>70&&imm.remorse>50;
+  let jd=0,td=0,rd=0,sd=0,cls,title,txt;
+
+  if(decision==='grant'&&goodCandidate){
+    cls='result-just'; title='✅ Parole Granted';
+    txt=`${imm.name} has demonstrated rehabilitation. Release is appropriate.`;
+    jd=5; td=3; rd=4; sd=500;
+    S.inmates=S.inmates.filter(i=>i.id!==imm.id);
+  }else if(decision==='deny'&&!goodCandidate){
+    cls='result-just'; title='🚫 Parole Denied';
+    txt=`${imm.name} has not yet demonstrated sufficient rehabilitation. Denial is in the interest of public safety.`;
+    jd=3; td=2; rd=3; sd=300;
+  }else if(decision==='grant'&&!goodCandidate){
+    cls='result-unjust'; title='⚠️ Risky Release';
+    txt=`${imm.name} was granted parole despite concerning behavior reports. Public safety may be compromised.`;
+    jd=-5; td=-6; rd=-4; sd=-800;
+    S.inmates=S.inmates.filter(i=>i.id!==imm.id);
+  }else{
+    cls='result-unjust'; title='❌ Excessive Denial';
+    txt=`${imm.name} was denied parole despite clear evidence of rehabilitation. Justice delayed.`;
+    jd=-3; td=-4; rd=-2; sd=-400;
+  }
+
+  S.justice=Math.max(0,Math.min(100,S.justice+jd));
+  S.publicTrust=Math.max(0,Math.min(100,S.publicTrust+td));
+  S.reputation=Math.max(0,Math.min(100,S.reputation+rd));
+  S.salary=Math.max(40000,S.salary+sd);
+  S.xp+=goodCandidate?30:15;
+
+  let html=`<div class="card"><h3>📜 Parole Decision</h3>
+    <div class="${cls}">
+      <div style="font-size:1.1rem;margin-bottom:6px;">${title}</div>
+      <div style="font-size:0.9rem;">${txt}</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div style="color:#666;">Justice</div><div class="num" style="color:${jd>=0?'#1b5e20':'#b71c1c'}">${jd>0?'+':''}${jd}</div></div>
+      <div class="stat-box"><div style="color:#666;">Public Trust</div><div class="num" style="color:${td>=0?'#1b5e20':'#b71c1c'}">${td>0?'+':''}${td}</div></div>
+      <div class="stat-box"><div style="color:#666;">Reputation</div><div class="num" style="color:${rd>=0?'#1b5e20':'#b71c1c'}">${rd>0?'+':''}${rd}</div></div>
+      <div class="stat-box"><div style="color:#666;">Salary</div><div class="num" style="color:${sd>=0?'#1b5e20':'#b71c1c'}">${sd>0?'+':''}$${sd.toLocaleString()}</div></div>
+    </div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="btn btn-navy" onclick="drawHub()">Return to Chambers</button>
     </div>
   </div>`;
   setMain(html);
   updateStats();
 }
 
-function endGame() {
-  const avg = (S.justice + S.publicTrust + S.reputation) / 3;
-  let title, summary;
-  if (avg >= 75) {
-    title = "🏆 Legendary Jurist";
-    summary = `Your term has been exemplary. Justice: ${S.justice}, Trust: ${S.publicTrust}. Final salary: $${S.salary.toLocaleString()}. The bar association has nominated you for the appellate court.`;
-  } else if (avg >= 50) {
-    title = "⚖️ Solid Record";
-    summary = `You served with competence. Justice: ${S.justice}, Trust: ${S.publicTrust}. Final salary: $${S.salary.toLocaleString()}. A respectable tenure.`;
-  } else if (avg >= 30) {
-    title = "📉 Controversial Tenure";
-    summary = `Your time was marked by inconsistency. Justice: ${S.justice}, Trust: ${S.publicTrust}. Final salary: $${S.salary.toLocaleString()}. The electorate is watching closely.`;
-  } else {
-    title = "⚠️ Impeachment Risk";
-    summary = `Your record is under serious scrutiny. Justice: ${S.justice}, Trust: ${S.publicTrust}. Final salary: $${S.salary.toLocaleString()}. The judicial conduct board has opened an inquiry.`;
+// ==================== ROSTER ====================
+function showRoster(){
+  let html=`<div class="card"><h3>📋 Inmate Roster</h3>`;
+  if(!S.inmates.length){
+    html+=`<p>No inmates currently incarcerated.</p>`;
+  }else{
+    html+=`<table class="roster-table">
+      <tr><th>Name</th><th>Charge</th><th>Sentence</th><th>Served</th><th>Behavior</th><th>Remorse</th><th>Status</th></tr>`;
+    S.inmates.forEach(imm=>{
+      const servedPct=Math.round((imm.timeServed/Math.max(1,imm.sentence))*100);
+      const eligible=servedPct>=50&&imm.sentence>0.5;
+      html+=`<tr>
+        <td>${imm.name}</td>
+        <td>${imm.charge}</td>
+        <td>${imm.sentence>=99?'Life':imm.sentence+' Yrs'}</td>
+        <td>${imm.timeServed}d (${servedPct}%)</td>
+        <td>${imm.behavior}</td>
+        <td>${imm.remorse}</td>
+        <td>${eligible?'<span style="color:#1b5e20;font-weight:bold;">Eligible</span>':'<span style="color:#757575;">Ineligible</span>'}</td>
+      </tr>`;
+    });
+    html+=`</table>`;
+  }
+  html+=`<div style="text-align:center;margin-top:14px;"><button class="btn btn-navy" onclick="drawHub()">Back</button></div></div>`;
+  setMain(html);
+}
+
+// ==================== DAY ADVANCE ====================
+function advanceDay(){
+  S.day++;
+  // Age inmates
+  S.inmates.forEach(imm=>{
+    imm.timeServed++;
+    // Random behavior changes
+    if(Math.random()<0.3) imm.behavior=Math.max(0,Math.min(100,imm.behavior+randInt(-5,5)));
+    if(Math.random()<0.2) imm.remorse=Math.max(0,Math.min(100,imm.remorse+randInt(-3,3)));
+  });
+  // Random media decay
+  S.mediaPressure=Math.max(0,S.mediaPressure-randInt(3,8));
+  // Salary adjustment based on rank
+  const rank=getRank();
+  if(S.salary<RANKS[rank].salaryBase) S.salary+=500;
+
+  updateStats();
+  renderCalendar();
+  renderMedia();
+
+  // Check for promotion
+  const newRank=getRank();
+  if(newRank>rank){
+    setMain(`<div class="start-screen">
+      <h2>🎖️ Promotion!</h2>
+      <div style="font-size:1.2rem;color:#b8860b;margin-bottom:10px;">${RANKS[newRank].title}</div>
+      <p>You have been promoted! New salary baseline: $${RANKS[newRank].salaryBase.toLocaleString()}.</p>
+      <p><strong>Unlocked:</strong> ${RANKS[newRank].unlock}</p>
+      <button class="btn btn-navy" onclick="drawHub()" style="margin-top:16px;">Continue</button>
+    </div>`);
+    S.salary=RANKS[newRank].salaryBase;
+    updateStats();
+  }else{
+    drawHub();
+  }
+}
+
+// ==================== END GAME ====================
+function endGame(){
+  const avg=(S.justice+S.publicTrust+S.reputation)/3;
+  let title,summary;
+  if(avg>=75){
+    title="🏆 Legendary Jurist";
+    summary=`Your career has been exemplary. Justice: ${S.justice}, Trust: ${S.publicTrust}. Final salary: $${S.salary.toLocaleString()}. You retire as ${getRankInfo().title}.`;
+  }else if(avg>=50){
+    title="⚖️ Solid Record";
+    summary=`You served with competence. Justice: ${S.justice}, Trust: ${S.publicTrust}. Final salary: $${S.salary.toLocaleString()}. A respectable career.`;
+  }else if(avg>=30){
+    title="📉 Controversial Career";
+    summary=`Your time was marked by inconsistency. Justice: ${S.justice}, Trust: ${S.publicTrust}. Final salary: $${S.salary.toLocaleString()}. History will debate your legacy.`;
+  }else{
+    title="⚠️ Disgraced";
+    summary=`Your record is under serious scrutiny. Justice: ${S.justice}, Trust: ${S.publicTrust}. Final salary: $${S.salary.toLocaleString()}. The judicial conduct board has opened an inquiry.`;
   }
 
   setMain(`
     <div class="start-screen">
-      <h2>🏛️ End of Term</h2>
+      <h2>🏛️ End of Career</h2>
       <div style="font-size:1.2rem;color:#3e2723;margin-bottom:10px;">${title}</div>
       <p>${summary}</p>
       <div class="end-grid">
@@ -724,8 +1548,9 @@ function endGame() {
         <div class="end-box"><div style="font-size:0.8rem;color:#555;">Trust</div><div class="num">${S.publicTrust}</div></div>
         <div class="end-box"><div style="font-size:0.8rem;color:#555;">Reputation</div><div class="num">${S.reputation}</div></div>
       </div>
-      <div style="font-size:1.1rem;color:#b8860b;font-weight:bold;">Final Salary: $${S.salary.toLocaleString()}</div>
-      <button class="btn btn-navy" onclick="startGame()" style="margin-top:20px;font-size:1.05rem;padding:14px 32px;">Start New Term</button>
+      <div style="font-size:1.1rem;color:#b8860b;font-weight:bold;">Final Rank: ${getRankInfo().title}</div>
+      <div style="font-size:1.1rem;color:#b8860b;font-weight:bold;margin-top:6px;">Final Salary: $${S.salary.toLocaleString()}</div>
+      <button class="btn btn-navy" onclick="startGame()" style="margin-top:20px;font-size:1.05rem;padding:14px 32px;">Start New Career</button>
     </div>
   `);
   updateStats();
