@@ -95,6 +95,7 @@
   .badge-b { background: #f3e5f5; color: #4a148c; }
   .badge-c { background: #ffebee; color: #b71c1c; }
   .badge-r { background: #e8f5e9; color: #1b5e20; }
+  .badge-d { background: #fff3e0; color: #e65100; }
   .content { padding: 16px; background: #faf3e0; overflow-y: auto; max-height: 600px; }
   .card {
     background: #fff;
@@ -178,6 +179,7 @@
   .btn-wood { background: #5d4037; color: #fff; }
   .btn-gold { background: #b8860b; color: #fff; }
   .btn-gray { background: #757575; color: #fff; }
+  .btn-orange { background: #e65100; color: #fff; }
   .sentence-btn {
     display: inline-block;
     padding: 8px 14px;
@@ -318,11 +320,11 @@
   .roster-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
   .roster-table th, .roster-table td {
     border: 1px solid #8d6e63;
-    padding: 6px;
+    padding: 5px;
     text-align: left;
   }
   .roster-table th {
@@ -330,6 +332,7 @@
     color: #ffd700;
   }
   .roster-table tr:nth-child(even) { background: #f5e6c8; }
+  .roster-table tr:hover { background: #fff8e1; }
   .parole-card {
     background: #e8f5e9;
     border: 2px solid #1b5e20;
@@ -376,6 +379,93 @@
     font-size: 0.75rem;
     color: #444;
   }
+  .facility-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: bold;
+  }
+  .facility-min { background: #e8f5e9; color: #1b5e20; }
+  .facility-med { background: #fff8e1; color: #f57f17; }
+  .facility-max { background: #ffebee; color: #b71c1c; }
+  .facility-super { background: #3e2723; color: #ffd700; }
+  .facility-death { background: #b71c1c; color: #fff; }
+  .status-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: bold;
+  }
+  .status-inc { background: #e3f2fd; color: #1a237e; }
+  .status-seg { background: #ffebee; color: #b71c1c; }
+  .status-par { background: #e8f5e9; color: #1b5e20; }
+  .status-rel { background: #f5f5f5; color: #757575; }
+  .status-dec { background: #3e2723; color: #ffd700; }
+  .disciplinary-log {
+    background: #fff;
+    border: 1px solid #8d6e63;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 8px;
+    font-size: 0.8rem;
+  }
+  .disciplinary-entry {
+    border-bottom: 1px dashed #ccc;
+    padding: 4px 0;
+  }
+  .disciplinary-entry:last-child { border-bottom: none; }
+  .disc-severe { color: #b71c1c; font-weight: bold; }
+  .disc-minor { color: #f57f17; }
+  .inmate-detail {
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  .inmate-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 0.85rem;
+  }
+  .inmate-detail-row:last-child { border-bottom: none; }
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 4px 10px;
+    border: 1px solid #8d6e63;
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: Georgia, serif;
+  }
+  .filter-btn.active {
+    background: #1a237e;
+    color: #fff;
+    border-color: #1a237e;
+  }
+  .sort-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+    align-items: center;
+    font-size: 0.8rem;
+  }
+  .sort-bar select {
+    font-family: Georgia, serif;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid #8d6e63;
+    font-size: 0.8rem;
+  }
 </style>
 <base target="_blank">
 </head>
@@ -418,7 +508,7 @@
         <em>No active stories.</em>
       </div>
       <h3 style="margin-top:14px;">🚔 Inmates</h3>
-      <div id="inmate-count" style="font-size:0.8rem;color:#3e2723;font-weight:bold;">0 incarcerated</div>
+      <div id="inmate-count" style="font-size:0.8rem;color:#3e2723;font-weight:bold;">0 active</div>
       <button class="btn btn-wood" style="width:100%;margin-top:6px;font-size:0.75rem;padding:6px;" onclick="showRoster()">View Roster</button>
     </div>
     <div class="content" id="main-content"></div>
@@ -430,6 +520,37 @@
 // ==================== DATA POOLS ====================
 const FIRST_NAMES = ["James","Maria","Robert","Jennifer","Michael","Linda","William","Patricia","David","Elizabeth","Richard","Susan","Joseph","Jessica","Thomas","Sarah","Charles","Karen","Daniel","Nancy","Matthew","Lisa","Anthony","Betty","Mark","Helen","Donald","Sandra","Steven","Donna","Kenneth","Carol","Paul","Ruth","Andrew","Sharon","Joshua","Michelle","Kevin","Emily","Brian","Amanda","George","Melissa","Edward","Deborah","Ronald","Stephanie","Timothy","Rebecca","Jason","Laura","Jeffrey","Shirley","Ryan","Cynthia","Jacob","Kathleen","Gary","Amy","Nicholas","Angela","Eric","Anna","Jonathan","Brenda","Stephen","Pamela","Larry","Nicole","Justin","Samantha","Scott","Katherine","Brandon","Emma","Benjamin","Rachel","Samuel","Christine","Gregory","Catherine","Frank","Debra","Alexander","Carolyn","Raymond","Janet","Patrick","Virginia","Jack","Dennis","Heather","Jerry","Diane","Tyler","Julie","Aaron","Joyce","Jose","Victoria","Adam","Olivia","Nathan","Kelly","Henry","Christina","Douglas","Lauren","Zachary","Martha","Peter","Joan","Kyle","Evelyn","Ethan","Megan","Walter","Cheryl","Noah","Andrea","Jeremy","Hannah","Christian","Frances","Keith","Jacqueline","Roger","Alice","Terry","Teresa","Gerald","Gloria","Harold","Doris","Sean","Sara","Austin","Janice","Carl","Jean","Arthur","Madison","Lawrence","Marilyn","Dylan","Abigail","Jesse","Julia","Jordan","Grace","Bryan","Judy","Billy","Theresa","Joe","Beverly","Bruce","Denise","Gabriel","Logan","Albert","Willie","Alan","Juan","Wayne","Elijah","Randy","Roy","Vincent","Ralph","Eugene","Russell","Bobby","Mason","Philip","Louis","Steve","Johnny","Craig"];
 const LAST_NAMES = ["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez","Hernandez","Lopez","Gonzalez","Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin","Lee","Perez","Thompson","White","Harris","Sanchez","Clark","Ramirez","Lewis","Robinson","Walker","Young","Allen","King","Wright","Scott","Torres","Nguyen","Hill","Flores","Green","Adams","Nelson","Baker","Hall","Rivera","Campbell","Mitchell","Carter","Roberts","Gomez","Phillips","Evans","Turner","Diaz","Parker","Cruz","Edwards","Collins","Reyes","Stewart","Morris","Morales","Murphy","Cook","Rogers","Gutierrez","Ortiz","Morgan","Cooper","Peterson","Bailey","Reed","Kelly","Howard","Ramos","Kim","Cox","Ward","Richardson","Watson","Brooks","Chavez","Wood","James","Bennett","Gray","Mendoza","Ruiz","Hughes","Price","Alvarez","Castillo","Sanders","Patel","Myers","Long","Ross","Foster","Jimenez","Powell","Jenkins","Perry","Russell","Sullivan","Bell","Coleman","Butler","Henderson","Barnes","Gonzales","Fisher","Vasquez","Simmons","Romero","Jordan","Patterson","Alexander","Hamilton","Graham","Reynolds","Griffin","Wallace","Moreno","West","Cole","Hayes","Bryant","Herrera","Gibson","Ellis","Tran","Medina","Aguilar","Stevens","Murray","Ford","Castro","Marshall","Owens","Harrison","Fernandez","Woods","Washington","Kennedy","Wells","Vargas","Henry","Chen","Freeman","Webb","Tucker","Guzman","Burns","Crawford","Olson","Simpson","Porter","Hunter","Gordon","Mendez","Silva","Shaw","Snyder","Mason","Dixon","Munoz","Hunt","Hicks","Holmes","Palmer","Wagner","Black","Robertson","Boyd","Rose","Stone","Salazar","Fox","Warren","Mills","Meyer","Rice","Schmidt","Garza","Daniels","Ferguson","Nichols","Stephens","Soto","Weaver","Ryan","Gardner","Payne","Grant","Dunn","Kelley","Spencer","Hawkins","Arnold","Pierce","Vazquez","Hansen","Peters","Santos","Hart","Bradley","Knight","Elliott","Cunningham","Duncan"];
+
+const PRISONS = [
+  {name:"Green Valley Correctional",level:"Minimum",security:1},
+  {name:"Riverside State Prison",level:"Medium",security:2},
+  {name:"Ironwood Penitentiary",level:"Maximum",security:3},
+  {name:"Blackrock Supermax",level:"Supermax",security:4},
+  {name:"Eastgate Correctional Complex",level:"Medium",security:2},
+  {name:"Northpoint Rehabilitation Center",level:"Minimum",security:1},
+  {name:"Sterling Maximum Security",level:"Maximum",security:3},
+  {name:"Fortress State Penitentiary",level:"Supermax",security:4},
+  {name:"Willow Creek Correctional",level:"Medium",security:2},
+  {name:"Summit Minimum Facility",level:"Minimum",security:1},
+];
+
+const DISCIPLINARY_INFRACTIONS = [
+  {type:"Minor: Late to count",severity:1,impact:-2},
+  {type:"Minor: Unauthorized possession",severity:1,impact:-3},
+  {type:"Minor: Disrespect to staff",severity:1,impact:-4},
+  {type:"Minor: Failure to report to work",severity:1,impact:-2},
+  {type:"Moderate: Fighting",severity:2,impact:-8},
+  {type:"Moderate: Destruction of property",severity:2,impact:-6},
+  {type:"Moderate: Unauthorized area",severity:2,impact:-5},
+  {type:"Moderate: Contraband possession",severity:2,impact:-7},
+  {type:"Severe: Assault on inmate",severity:3,impact:-15},
+  {type:"Severe: Assault on staff",severity:3,impact:-20},
+  {type:"Severe: Attempted escape",severity:3,impact:-25},
+  {type:"Severe: Gang activity",severity:3,impact:-18},
+  {type:"Severe: Drug trafficking inside",severity:3,impact:-22},
+  {type:"Critical: Homicide",severity:4,impact:-40},
+  {type:"Critical: Hostage taking",severity:4,impact:-50},
+];
 
 const CHARGE_TEMPLATES = {
   theft: {
@@ -649,6 +770,8 @@ const MITIGATING_FACTORS = [
 
 // ==================== STATE ====================
 let S = {};
+let ROSTER_FILTER = 'all';
+let ROSTER_SORT = 'name';
 
 function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
 function randItem(arr){return arr[Math.floor(Math.random()*arr.length)];}
@@ -666,6 +789,49 @@ function nextRankXP(){
   const r=getRank();
   if(r>=RANKS.length-1) return 99999;
   return RANKS[r+1].xpNeed;
+}
+
+function assignPrison(years,capital){
+  if(capital) return {name:"State Death Row Facility",level:"Death Row",security:5};
+  if(years>=20) return randItem(PRISONS.filter(p=>p.security>=3));
+  if(years>=5) return randItem(PRISONS.filter(p=>p.security===2||p.security===3));
+  if(years>=1) return randItem(PRISONS.filter(p=>p.security>=1&&p.security<=2));
+  return randItem(PRISONS.filter(p=>p.security===1));
+}
+
+function getFacilityClass(level){
+  if(level==="Minimum") return "facility-min";
+  if(level==="Medium") return "facility-med";
+  if(level==="Maximum") return "facility-max";
+  if(level==="Supermax") return "facility-super";
+  return "facility-death";
+}
+
+function getStatusClass(status){
+  if(status==="Incarcerated") return "status-inc";
+  if(status==="Segregation") return "status-seg";
+  if(status==="Paroled") return "status-par";
+  if(status==="Released") return "status-rel";
+  return "status-dec";
+}
+
+function calculateReleaseDate(imm){
+  if(imm.sentence>=99) return "Life";
+  if(imm.status==="Paroled"||imm.status==="Released") return "Completed";
+  const daysRemaining = Math.max(0, Math.round(imm.sentence * 365) - imm.timeServed);
+  if(daysRemaining<=0) return "Overdue";
+  const releaseDay = S.day + daysRemaining;
+  return "Day " + releaseDay + " (~" + Math.ceil(daysRemaining/365) + "y)";
+}
+
+function generateDisciplinaryAction(){
+  const inf = randItem(DISCIPLINARY_INFRACTIONS);
+  return {
+    day: S.day,
+    type: inf.type,
+    severity: inf.severity,
+    impact: inf.impact,
+  };
 }
 
 
@@ -830,7 +996,8 @@ function updateStats(){
   const prevXP=RANKS[r].xpNeed;
   const pct=Math.min(100,Math.max(0,((S.xp-prevXP)/(nextXP-prevXP))*100));
   document.getElementById('bar-xp').style.width=(r>=RANKS.length-1?100:pct)+'%';
-  document.getElementById('inmate-count').textContent=S.inmates.length+' incarcerated';
+  const activeInmates = S.inmates.filter(i=>i.status==="Incarcerated"||i.status==="Segregation"||i.status==="Death Row").length;
+  document.getElementById('inmate-count').textContent=activeInmates+' active / '+S.inmates.length+' total';
 }
 
 function renderCalendar(){
@@ -865,14 +1032,13 @@ function renderMedia(){
 
 function setMain(html){document.getElementById('main-content').innerHTML=html;}
 
-
 // ==================== SCREENS ====================
 function drawStart(){
   setMain(`
     <div class="start-screen">
       <h2>Welcome to the Bench - Career Edition</h2>
       <p>You are a newly appointed Magistrate Judge. Build your career from the district court to the Supreme Court. Handle standard trials, RICO conspiracies, capital murder cases, and parole hearings. The media is watching. Justice is in your hands.</p>
-      <div style="background:#f5e6c8;border-radius:8px;padding:14px;margin:16px auto;max-width:420px;text-align:left;font-size:0.85rem;">
+      <div style="background:#f5e6c8;border-radius:8px;padding:14px;margin:16px auto;max-width:440px;text-align:left;font-size:0.85rem;">
         <strong>Features:</strong><br>
         • Career progression (5 ranks)<br>
         • Procedural case generation (infinite variety)<br>
@@ -880,6 +1046,8 @@ function drawStart(){
         • Multi-defendant RICO trials<br>
         • Death penalty phases<br>
         • Parole hearings & inmate roster<br>
+        • Prison facilities & security levels<br>
+        • Disciplinary actions & inmate status tracking<br>
       </div>
       <button class="btn btn-navy" onclick="startGame()" style="font-size:1rem;padding:12px 28px;">Take the Oath & Begin</button>
     </div>
@@ -893,6 +1061,8 @@ function startGame(){
     verdict:null,sentence:null,calendar:[],inmates:[],mediaHeadlines:[],
     currentScreen:'hub',ricoVerdicts:{},currentDefendantIndex:0,
   };
+  ROSTER_FILTER='all';
+  ROSTER_SORT='name';
   fillCalendar();
   updateStats();
   renderCalendar();
@@ -919,13 +1089,14 @@ function drawHub(){
   S.currentScreen='hub';
   const rank=getRank();
   const nextRank=RANKS[Math.min(rank+1,RANKS.length-1)];
+  const activeInmates = S.inmates.filter(i=>i.status==="Incarcerated"||i.status==="Segregation"||i.status==="Death Row").length;
   setMain(`
     <div class="card"><h3>🏛️ Judge's Chambers - Day ${S.day}</h3>
       <div class="meta">
         <strong>Current Rank:</strong> ${RANKS[rank].title}<br>
         <strong>Next Rank:</strong> ${rank>=RANKS.length-1?'Max Rank':nextRank.title+' ('+nextRank.xpNeed+' XP)'}<br>
         <strong>Cases on Docket:</strong> ${S.calendar.length}<br>
-        <strong>Inmates:</strong> ${S.inmates.length}
+        <strong>Active Inmates:</strong> ${activeInmates} / ${S.inmates.length} total
       </div>
     </div>
     <div class="hub-grid">
@@ -947,7 +1118,7 @@ function drawHub(){
       <div class="hub-card" onclick="advanceDay()">
         <div class="hub-icon">📅</div>
         <h4>Next Day</h4>
-        <p>Advance time, check for new developments</p>
+        <p>Advance time, inmates serve sentences</p>
       </div>
     </div>
     ${S.mediaHeadlines.length?`<div class="media-box"><h4>📰 Latest Headline</h4><div class="media-headline">"${S.mediaHeadlines[S.mediaHeadlines.length-1]}"</div></div>`:''}
@@ -963,6 +1134,7 @@ function startNextCase(){
   }
   loadCase(S.currentCaseIndex);
 }
+
 
 function loadCase(index){
   if(index>=S.calendar.length){drawHub();return;}
@@ -1122,7 +1294,6 @@ function confirmSentence(){
   showResult();
 }
 
-
 // ==================== DEATH PENALTY PHASE ====================
 function showDeathPenaltyPhase(){
   const c=S.calendar[S.currentCaseIndex];
@@ -1227,16 +1398,18 @@ function showRICOResult(){
 
     if(v==='guilty'&&d.guilty){
       const sn=randItem(c.sentences);
+      const prison = assignPrison(sn.years, false);
       S.inmates.push({
         name:d.name,charge:d.charge,sentence:sn.years,sentenceDay:S.day,
-        behavior:randInt(30,90),remorse:randInt(20,80),timeServed:0,eligible:false,id:randInt(1000,9999)
+        behavior:randInt(30,90),remorse:randInt(20,80),timeServed:0,eligible:false,id:randInt(1000,9999),
+        status:"Incarcerated",facility:prison,releaseDate:null,
+        disciplinary:[],capital:false
       });
     }
   });
 
   html+=`</div>`;
 
-  // Media
   const postHeadline=generateMediaHeadline(c,true,'mixed');
   S.mediaHeadlines.push(postHeadline);
   S.mediaPressure=Math.max(0,S.mediaPressure-10);
@@ -1245,7 +1418,7 @@ function showRICOResult(){
   S.publicTrust=Math.max(0,Math.min(100,S.publicTrust+td));
   S.reputation=Math.max(0,Math.min(100,S.reputation+rd));
   S.salary=Math.max(40000,S.salary+sd);
-  S.xp+=just?50:20;
+  S.xp+=jd>0?50:20;
   S.casesCompleted++;
   S.day++;
   S.currentCaseIndex++;
@@ -1296,9 +1469,12 @@ function showResult(){
     sentenceLabel=sn.label;
     txt+=`<br><br><strong>Sentence:</strong> ${sn.label}`;
     if(sn.years>0){
+      const prison = assignPrison(sn.years, c.capital);
       S.inmates.push({
         name:c.defendant,charge:c.charge,sentence:sn.years,sentenceDay:S.day,
-        behavior:randInt(30,90),remorse:randInt(20,80),timeServed:0,eligible:false,id:randInt(1000,9999)
+        behavior:randInt(30,90),remorse:randInt(20,80),timeServed:0,eligible:false,id:randInt(1000,9999),
+        status:c.capital?"Death Row":"Incarcerated",facility:prison,releaseDate:null,
+        disciplinary:[],capital:c.capital||false
       });
     }
   }
@@ -1307,19 +1483,12 @@ function showResult(){
     const opts=["Death Penalty","Life Without Parole","Life With Parole","30 Years"];
     sentenceLabel=opts[S.sentence];
     txt+=`<br><br><strong>Sentence:</strong> ${sentenceLabel}`;
-    const years=[99,99,99,30][S.sentence];
-    S.inmates.push({
-      name:c.defendant,charge:c.charge,sentence:years,sentenceDay:S.day,
-      behavior:randInt(20,70),remorse:randInt(10,60),timeServed:0,eligible:false,id:randInt(1000,9999),capital:true
-    });
   }
 
-  // Media pressure multiplier
   const pressureMult=1+(S.mediaPressure/200);
   if(jd<0){jd=Math.round(jd*pressureMult);td=Math.round(td*pressureMult);}
   else{jd=Math.round(jd/pressureMult);}
 
-  // Post-verdict media
   const postHeadline=generateMediaHeadline(c,true,S.verdict,sentenceLabel);
   S.mediaHeadlines.push(postHeadline);
   S.mediaPressure=Math.max(0,S.mediaPressure-10);
@@ -1358,8 +1527,9 @@ function showResult(){
 // ==================== PAROLE SYSTEM ====================
 function getEligibleInmates(){
   return S.inmates.filter(imm=>{
-    const servedPct=imm.timeServed/Math.max(1,imm.sentence);
-    return servedPct>=0.5 && !imm.eligible && imm.sentence>0.5;
+    if(imm.status!=="Incarcerated"&&imm.status!=="Segregation") return false;
+    const servedPct=imm.timeServed/Math.max(1,imm.sentence*365);
+    return servedPct>=0.5 && !imm.eligible && imm.sentence>0.5 && !imm.capital;
   });
 }
 
@@ -1368,7 +1538,7 @@ function checkParole(){
   if(!eligible.length){
     setMain(`<div class="card"><h3>🔓 Parole Board</h3>
       <p>No inmates are currently eligible for parole review.</p>
-      <p>Inmates become eligible after serving 50% of their sentence.</p>
+      <p>Inmates become eligible after serving 50% of their sentence with good behavior.</p>
       <button class="btn btn-navy" onclick="drawHub()">Back</button>
     </div>`);
     return;
@@ -1378,23 +1548,38 @@ function checkParole(){
 
 function showParole(inmate){
   S.currentParoleInmate=inmate;
-  const servedPct=Math.round((inmate.timeServed/Math.max(1,inmate.sentence))*100);
-  const rec=inmate.behavior>70&&inmate.remorse>50?"GRANT":"DENY";
+  const servedPct=Math.round((inmate.timeServed/Math.max(1,inmate.sentence*365))*100);
+  const discCount=inmate.disciplinary.length;
+  const discSevere=inmate.disciplinary.filter(d=>d.severity>=3).length;
+  const rec=inmate.behavior>70&&imm.remorse>50&&discSevere===0?"GRANT":"DENY";
 
   let html=`<div class="parole-card"><h3>🔓 Parole Hearing</h3>
     <div class="parole-stat"><strong>Inmate:</strong> <span>${inmate.name}</span></div>
+    <div class="parole-stat"><strong>ID:</strong> <span>#${inmate.id}</span></div>
     <div class="parole-stat"><strong>Charge:</strong> <span>${inmate.charge}</span></div>
+    <div class="parole-stat"><strong>Facility:</strong> <span><span class="facility-tag ${getFacilityClass(inmate.facility.level)}">${inmate.facility.name}</span> (${inmate.facility.level})</span></div>
     <div class="parole-stat"><strong>Sentence:</strong> <span>${inmate.sentence>=99?'Life':inmate.sentence+' Years'}</span></div>
     <div class="parole-stat"><strong>Time Served:</strong> <span>${inmate.timeServed} days (${servedPct}%)</span></div>
     <div class="parole-stat"><strong>Behavior Score:</strong> <span>${inmate.behavior}/100</span></div>
     <div class="parole-stat"><strong>Remorse Score:</strong> <span>${inmate.remorse}/100</span></div>
+    <div class="parole-stat"><strong>Disciplinary Record:</strong> <span>${discCount} infractions${discSevere>0?' ('+discSevere+' severe)':''}</span></div>
     <div class="parole-stat"><strong>Board Recommendation:</strong> <span style="color:${rec==='GRANT'?'#1b5e20':'#b71c1c'};font-weight:bold;">${rec}</span></div>
   </div>`;
 
   html+=`<div class="card"><h4>📋 Institutional Report</h4>
-    <p style="font-size:0.85rem;color:#444;">${inmate.name} has ${inmate.behavior>70?'maintained excellent conduct':'had several disciplinary incidents'} while incarcerated. 
-    ${inmate.remorse>50?'Psychological evaluations indicate genuine remorse and rehabilitation.':'The inmate shows limited remorse for their crimes.'}</p>
-    <div style="text-align:center;margin-top:12px;">
+    <p style="font-size:0.85rem;color:#444;">${inmate.name} has ${inmate.behavior>70?'maintained excellent conduct':'had several disciplinary incidents'} while incarcerated at ${inmate.facility.name}. 
+    ${inmate.remorse>50?'Psychological evaluations indicate genuine remorse and rehabilitation.':'The inmate shows limited remorse for their crimes.'}
+    ${discCount>0?'Disciplinary record includes '+discCount+' incident(s).':'Clean disciplinary record.'}</p>`;
+
+  if(inmate.disciplinary.length){
+    html+=`<div class="disciplinary-log"><strong>Disciplinary Log:</strong>`;
+    inmate.disciplinary.slice(-5).forEach(d=>{
+      html+=`<div class="disciplinary-entry ${d.severity>=3?'disc-severe':'disc-minor'}">Day ${d.day}: ${d.type} (${d.impact>0?'+':''}${d.impact} behavior)</div>`;
+    });
+    html+=`</div>`;
+  }
+
+  html+=`<div style="text-align:center;margin-top:12px;">
       <button class="btn btn-green" onclick="doParole('grant')">Grant Parole</button>
       <button class="btn btn-red" onclick="doParole('deny')">Deny Parole</button>
     </div>
@@ -1408,23 +1593,26 @@ function doParole(decision){
   if(!imm)return;
   imm.eligible=true;
 
-  const goodCandidate=imm.behavior>70&&imm.remorse>50;
+  const discSevere=imm.disciplinary.filter(d=>d.severity>=3).length;
+  const goodCandidate=imm.behavior>70&&imm.remorse>50&&discSevere===0;
   let jd=0,td=0,rd=0,sd=0,cls,title,txt;
 
   if(decision==='grant'&&goodCandidate){
     cls='result-just'; title='✅ Parole Granted';
-    txt=`${imm.name} has demonstrated rehabilitation. Release is appropriate.`;
+    txt=`${imm.name} has demonstrated rehabilitation. Release from ${imm.facility.name} is appropriate.`;
     jd=5; td=3; rd=4; sd=500;
-    S.inmates=S.inmates.filter(i=>i.id!==imm.id);
+    imm.status="Paroled";
+    imm.releaseDate=S.day;
   }else if(decision==='deny'&&!goodCandidate){
     cls='result-just'; title='🚫 Parole Denied';
-    txt=`${imm.name} has not yet demonstrated sufficient rehabilitation. Denial is in the interest of public safety.`;
+    txt=`${imm.name} has not yet demonstrated sufficient rehabilitation at ${imm.facility.name}. Denial is in the interest of public safety.`;
     jd=3; td=2; rd=3; sd=300;
   }else if(decision==='grant'&&!goodCandidate){
     cls='result-unjust'; title='⚠️ Risky Release';
-    txt=`${imm.name} was granted parole despite concerning behavior reports. Public safety may be compromised.`;
+    txt=`${imm.name} was granted parole despite concerning behavior reports from ${imm.facility.name}. Public safety may be compromised.`;
     jd=-5; td=-6; rd=-4; sd=-800;
-    S.inmates=S.inmates.filter(i=>i.id!==imm.id);
+    imm.status="Paroled";
+    imm.releaseDate=S.day;
   }else{
     cls='result-unjust'; title='❌ Excessive Denial';
     txt=`${imm.name} was denied parole despite clear evidence of rehabilitation. Justice delayed.`;
@@ -1459,22 +1647,64 @@ function doParole(decision){
 // ==================== ROSTER ====================
 function showRoster(){
   let html=`<div class="card"><h3>📋 Inmate Roster</h3>`;
-  if(!S.inmates.length){
-    html+=`<p>No inmates currently incarcerated.</p>`;
+
+  html+=`<div class="filter-bar">
+    <span style="font-size:0.8rem;color:#555;align-self:center;">Filter:</span>
+    <button class="filter-btn ${ROSTER_FILTER==='all'?'active':''}" onclick="setRosterFilter('all')">All</button>
+    <button class="filter-btn ${ROSTER_FILTER==='active'?'active':''}" onclick="setRosterFilter('active')">Active</button>
+    <button class="filter-btn ${ROSTER_FILTER==='paroled'?'active':''}" onclick="setRosterFilter('paroled')">Paroled</button>
+    <button class="filter-btn ${ROSTER_FILTER==='segregation'?'active':''}" onclick="setRosterFilter('segregation')">Segregation</button>
+    <button class="filter-btn ${ROSTER_FILTER==='deathrow'?'active':''}" onclick="setRosterFilter('deathrow')">Death Row</button>
+  </div>`;
+
+  html+=`<div class="sort-bar">
+    <span style="font-size:0.8rem;color:#555;">Sort by:</span>
+    <select onchange="setRosterSort(this.value)">
+      <option value="name" ${ROSTER_SORT==='name'?'selected':''}>Name</option>
+      <option value="facility" ${ROSTER_SORT==='facility'?'selected':''}>Facility</option>
+      <option value="sentence" ${ROSTER_SORT==='sentence'?'selected':''}>Sentence Length</option>
+      <option value="served" ${ROSTER_SORT==='served'?'selected':''}>Time Served</option>
+      <option value="behavior" ${ROSTER_SORT==='behavior'?'selected':''}>Behavior</option>
+      <option value="release" ${ROSTER_SORT==='release'?'selected':''}>Release Date</option>
+    </select>
+  </div>`;
+
+  let displayInmates = [...S.inmates];
+
+  if(ROSTER_FILTER==='active') displayInmates = displayInmates.filter(i=>i.status==="Incarcerated");
+  else if(ROSTER_FILTER==='paroled') displayInmates = displayInmates.filter(i=>i.status==="Paroled");
+  else if(ROSTER_FILTER==='segregation') displayInmates = displayInmates.filter(i=>i.status==="Segregation");
+  else if(ROSTER_FILTER==='deathrow') displayInmates = displayInmates.filter(i=>i.status==="Death Row");
+
+  displayInmates.sort((a,b)=>{
+    if(ROSTER_SORT==='name') return a.name.localeCompare(b.name);
+    if(ROSTER_SORT==='facility') return a.facility.name.localeCompare(b.facility.name);
+    if(ROSTER_SORT==='sentence') return b.sentence-a.sentence;
+    if(ROSTER_SORT==='served') return b.timeServed-a.timeServed;
+    if(ROSTER_SORT==='behavior') return b.behavior-a.behavior;
+    if(ROSTER_SORT==='release') return (a.releaseDate||99999)-(b.releaseDate||99999);
+    return 0;
+  });
+
+  if(!displayInmates.length){
+    html+=`<p>No inmates match the current filter.</p>`;
   }else{
     html+=`<table class="roster-table">
-      <tr><th>Name</th><th>Charge</th><th>Sentence</th><th>Served</th><th>Behavior</th><th>Remorse</th><th>Status</th></tr>`;
-    S.inmates.forEach(imm=>{
-      const servedPct=Math.round((imm.timeServed/Math.max(1,imm.sentence))*100);
-      const eligible=servedPct>=50&&imm.sentence>0.5;
+      <tr><th>Name</th><th>ID</th><th>Charge</th><th>Facility</th><th>Status</th><th>Sentence</th><th>Served</th><th>Release</th><th>Disc.</th><th>Action</th></tr>`;
+    displayInmates.forEach(imm=>{
+      const servedPct=Math.round((imm.timeServed/Math.max(1,imm.sentence*365))*100);
+      const releaseStr = calculateReleaseDate(imm);
       html+=`<tr>
         <td>${imm.name}</td>
+        <td>#${imm.id}</td>
         <td>${imm.charge}</td>
+        <td><span class="facility-tag ${getFacilityClass(imm.facility.level)}">${imm.facility.name}</span></td>
+        <td><span class="status-tag ${getStatusClass(imm.status)}">${imm.status}</span></td>
         <td>${imm.sentence>=99?'Life':imm.sentence+' Yrs'}</td>
         <td>${imm.timeServed}d (${servedPct}%)</td>
-        <td>${imm.behavior}</td>
-        <td>${imm.remorse}</td>
-        <td>${eligible?'<span style="color:#1b5e20;font-weight:bold;">Eligible</span>':'<span style="color:#757575;">Ineligible</span>'}</td>
+        <td>${releaseStr}</td>
+        <td>${imm.disciplinary.length}</td>
+        <td><button class="btn btn-navy" style="font-size:0.65rem;padding:3px 8px;" onclick="viewInmateDetail(${imm.id})">View</button></td>
       </tr>`;
     });
     html+=`</table>`;
@@ -1483,18 +1713,113 @@ function showRoster(){
   setMain(html);
 }
 
+function setRosterFilter(f){ROSTER_FILTER=f;showRoster();}
+function setRosterSort(s){ROSTER_SORT=s;showRoster();}
+
+function viewInmateDetail(inmateId){
+  const imm=S.inmates.find(i=>i.id===inmateId);
+  if(!imm)return;
+  const servedPct=Math.round((imm.timeServed/Math.max(1,imm.sentence*365))*100);
+  const releaseStr=calculateReleaseDate(imm);
+
+  let html=`<div class="card"><h3>📋 Inmate Detail — ${imm.name}</h3>`;
+  html+=`<div class="inmate-detail">`;
+  html+=`<div class="inmate-detail-row"><span><strong>Inmate ID</strong></span><span>#${imm.id}</span></div>`;
+  html+=`<div class="inmate-detail-row"><span><strong>Charge</strong></span><span>${imm.charge}</span></div>`;
+  html+=`<div class="inmate-detail-row"><span><strong>Facility</strong></span><span><span class="facility-tag ${getFacilityClass(imm.facility.level)}">${imm.facility.name}</span> (${imm.facility.level})</span></div>`;
+  html+=`<div class="inmate-detail-row"><span><strong>Status</strong></span><span><span class="status-tag ${getStatusClass(imm.status)}">${imm.status}</span></span></div>`;
+  html+=`<div class="inmate-detail-row"><span><strong>Sentence</strong></span><span>${imm.sentence>=99?'Life':imm.sentence+' Years'}</span></div>`;
+  html+=`<div class="inmate-detail-row"><span><strong>Time Served</strong></span><span>${imm.timeServed} days (${servedPct}%)</span></div>`;
+  html+=`<div class="inmate-detail-row"><span><strong>Projected Release</strong></span><span>${releaseStr}</span></div>`;
+  html+=`<div class="inmate-detail-row"><span><strong>Behavior Score</strong></span><span>${imm.behavior}/100</span></div>`;
+  html+=`<div class="inmate-detail-row"><span><strong>Remorse Score</strong></span><span>${imm.remorse}/100</span></div>`;
+  html+=`<div class="inmate-detail-row"><span><strong>Capital Case</strong></span><span>${imm.capital?'Yes':'No'}</span></div>`;
+  html+=`</div>`;
+
+  if(imm.disciplinary.length){
+    html+=`<div class="disciplinary-log"><strong>Disciplinary Record (${imm.disciplinary.length} entries):</strong>`;
+    imm.disciplinary.forEach(d=>{
+      html+=`<div class="disciplinary-entry ${d.severity>=3?'disc-severe':d.severity>=2?'disc-minor':''}">Day ${d.day}: ${d.type} <em>(${d.impact>0?'+':''}${d.impact} behavior)</em></div>`;
+    });
+    html+=`</div>`;
+  }else{
+    html+=`<div class="card" style="background:#e8f5e9;border-color:#1b5e20;"><em>Clean disciplinary record.</em></div>`;
+  }
+
+  if(imm.status==="Incarcerated"||imm.status==="Segregation"){
+    html+=`<div style="text-align:center;margin-top:12px;">
+      <button class="btn btn-orange" onclick="transferInmate(${imm.id})">Transfer Facility</button>
+      <button class="btn btn-red" onclick="placeInSegregation(${imm.id})">Segregation</button>
+    </div>`;
+  }
+
+  html+=`<div style="text-align:center;margin-top:14px;"><button class="btn btn-navy" onclick="showRoster()">Back to Roster</button></div></div>`;
+  setMain(html);
+}
+
+function transferInmate(inmateId){
+  const imm=S.inmates.find(i=>i.id===inmateId);
+  if(!imm)return;
+  const newPrison = assignPrison(imm.sentence, imm.capital);
+  imm.facility = newPrison;
+  alert(`Inmate ${imm.name} transferred to ${newPrison.name} (${newPrison.level}).`);
+  viewInmateDetail(inmateId);
+}
+
+function placeInSegregation(inmateId){
+  const imm=S.inmates.find(i=>i.id===inmateId);
+  if(!imm)return;
+  if(imm.status==="Segregation"){
+    imm.status="Incarcerated";
+    alert(`${imm.name} returned to general population.`);
+  }else{
+    imm.status="Segregation";
+    imm.behavior=Math.max(0,imm.behavior-10);
+    alert(`${imm.name} placed in segregation. Behavior score decreased.`);
+  }
+  viewInmateDetail(inmateId);
+}
+
+
 // ==================== DAY ADVANCE ====================
 function advanceDay(){
   S.day++;
-  // Age inmates
+
+  // Age inmates and generate disciplinary actions
   S.inmates.forEach(imm=>{
-    imm.timeServed++;
-    // Random behavior changes
-    if(Math.random()<0.3) imm.behavior=Math.max(0,Math.min(100,imm.behavior+randInt(-5,5)));
-    if(Math.random()<0.2) imm.remorse=Math.max(0,Math.min(100,imm.remorse+randInt(-3,3)));
+    if(imm.status==="Incarcerated"||imm.status==="Segregation"){
+      imm.timeServed++;
+
+      // Random behavior changes
+      if(Math.random()<0.3) imm.behavior=Math.max(0,Math.min(100,imm.behavior+randInt(-5,5)));
+      if(Math.random()<0.2) imm.remorse=Math.max(0,Math.min(100,imm.remorse+randInt(-3,3)));
+
+      // Random disciplinary actions based on behavior and facility security
+      const discChance = imm.behavior < 40 ? 0.25 : imm.behavior < 70 ? 0.12 : 0.05;
+      const securityMult = imm.facility.security / 4;
+      if(Math.random() < discChance * securityMult){
+        const action = generateDisciplinaryAction();
+        imm.disciplinary.push(action);
+        imm.behavior = Math.max(0, imm.behavior + action.impact);
+        // Severe infractions may trigger segregation
+        if(action.severity>=3 && imm.status==="Incarcerated"){
+          imm.status="Segregation";
+        }
+      }
+
+      // Check for natural release (sentence completed)
+      if(imm.sentence<99 && imm.timeServed>=imm.sentence*365){
+        if(imm.status!=="Paroled" && imm.status!=="Released"){
+          imm.status="Released";
+          imm.releaseDate=S.day;
+        }
+      }
+    }
   });
+
   // Random media decay
   S.mediaPressure=Math.max(0,S.mediaPressure-randInt(3,8));
+
   // Salary adjustment based on rank
   const rank=getRank();
   if(S.salary<RANKS[rank].salaryBase) S.salary+=500;
